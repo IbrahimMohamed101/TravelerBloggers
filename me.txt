@@ -1,0 +1,3 @@
+sequelize-auto -o "./models" -d traveler_bloggers_platform -h localhost -u postgres -p 5432 -x 1234 -e postgres
+ngrok http 3000
+ssh -R TravelerBloggers:80:localhost:3000 serveo.net

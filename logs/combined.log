@@ -1,0 +1,212 @@
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T22:14:50.585Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T22:14:50.590Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:17:53.650Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:20:22.510Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T22:22:34.431Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T22:22:34.438Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:22:51.536Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:23:47.085Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T22:24:42.737Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T22:24:42.740Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:24:46.657Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:26:35.987Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T22:26:36.783Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T22:26:36.787Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:26:43.242Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:28:18.476Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T22:28:19.322Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T22:28:19.326Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:28:26.351Z"}
+{"level":"error","message":"Registration error: Cannot read properties of undefined (reading 'findOne')","timestamp":"2025-03-28T22:28:26.352Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:30:02.350Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T22:30:03.330Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T22:30:03.333Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:30:10.086Z"}
+{"level":"error","message":"Error registering user: column \"password\" does not exist, Stack: Error\n    at Query.run (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async users.findAll (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/sequelize/lib/model.js:1140:21)\n    at async users.findOne (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/sequelize/lib/model.js:1240:12)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:34:34)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T22:30:10.098Z"}
+{"level":"error","message":"Registration error: column \"password\" does not exist","timestamp":"2025-03-28T22:30:10.099Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:32:27.920Z"}
+{"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-03-28T22:32:29.102Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:34:58.338Z"}
+{"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-03-28T22:34:59.176Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:35:40.093Z"}
+{"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-03-28T22:35:40.720Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:43:25.853Z"}
+{"level":"error","message":"Error syncing database: relation \"public.posts\" does not exist","timestamp":"2025-03-28T22:43:26.549Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T22:50:01.687Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T22:50:02.673Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T22:50:02.677Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-28T22:50:10.818Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"27285eb6-09e7-4c70-a265-49fac2456f48\",\"first_name\":\"Ahmed\",\"last_name\":\"Ali\",\"username\":\"ahmedali\",\"email\":\"ahmed@example.com\"}","timestamp":"2025-03-28T22:50:10.834Z"}
+{"level":"info","message":"Password hashed for user: ahmed@example.com","timestamp":"2025-03-28T22:50:10.907Z"}
+{"level":"debug","message":"Full user data before creation: {\"id\":\"27285eb6-09e7-4c70-a265-49fac2456f48\",\"first_name\":\"Ahmed\",\"last_name\":\"Ali\",\"username\":\"ahmedali\",\"email\":\"ahmed@example.com\",\"password\":\"$2b$10$8wyMZJ2tnhhIMgC1sXvT6uIddvP5VlZZnG64Px562qvmHb6bMWEie\",\"bio\":null,\"gender\":null,\"social_media\":{},\"interested_categories\":[]}","timestamp":"2025-03-28T22:50:10.907Z"}
+{"level":"info","message":"User created in DB: 27285eb6-09e7-4c70-a265-49fac2456f48","timestamp":"2025-03-28T22:50:10.921Z"}
+{"level":"info","message":"Token generated for user: ahmed@example.com","timestamp":"2025-03-28T22:50:10.925Z"}
+{"level":"info","message":"User registered successfully: ahmed@example.com, ID: 27285eb6-09e7-4c70-a265-49fac2456f48","timestamp":"2025-03-28T22:50:10.925Z"}
+{"level":"info","message":"Attempting to register user with email: mohamed@example.com","timestamp":"2025-03-28T22:57:23.118Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"a6dc2e8c-af25-46a0-a4d7-3a75849080e9\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"mohamed@example.com\"}","timestamp":"2025-03-28T22:57:23.371Z"}
+{"level":"error","message":"Error registering user: Wrong number of segments in token: 4/0AQSTgQHEKcsV0x-9DOn39uKze18hmqyVZdjWaFpFkILRzEX0anWHKKeE8tDrYFehAWirAw, Stack: Error: Wrong number of segments in token: 4/0AQSTgQHEKcsV0x-9DOn39uKze18hmqyVZdjWaFpFkILRzEX0anWHKKeE8tDrYFehAWirAw\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:655:19)\n    at OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:34)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T22:57:23.817Z"}
+{"level":"error","message":"Registration error: Wrong number of segments in token: 4/0AQSTgQHEKcsV0x-9DOn39uKze18hmqyVZdjWaFpFkILRzEX0anWHKKeE8tDrYFehAWirAw","timestamp":"2025-03-28T22:57:23.819Z"}
+{"level":"info","message":"Attempting to register user with email: mohamed@example.com","timestamp":"2025-03-28T23:01:02.954Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"53565526-8073-43b1-ab35-066a85352359\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"mohamed@example.com\"}","timestamp":"2025-03-28T23:01:03.129Z"}
+{"level":"error","message":"Error registering user: Wrong number of segments in token: 4/0AQSTgQGDYKI0S_-2smX8PjDxSfZJ1U2eH45_AIzQQFa8W-g_ub_U_Jk2NuORZ2LvQ6Jrcw, Stack: Error: Wrong number of segments in token: 4/0AQSTgQGDYKI0S_-2smX8PjDxSfZJ1U2eH45_AIzQQFa8W-g_ub_U_Jk2NuORZ2LvQ6Jrcw\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:655:19)\n    at OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:34)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:01:03.135Z"}
+{"level":"error","message":"Registration error: Wrong number of segments in token: 4/0AQSTgQGDYKI0S_-2smX8PjDxSfZJ1U2eH45_AIzQQFa8W-g_ub_U_Jk2NuORZ2LvQ6Jrcw","timestamp":"2025-03-28T23:01:03.135Z"}
+{"level":"info","message":"Attempting to register user with email: mohamed@example.com","timestamp":"2025-03-28T23:05:01.648Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"bf358814-3f4a-4faa-b302-c861827364cf\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"mohamed@example.com\"}","timestamp":"2025-03-28T23:05:01.746Z"}
+{"level":"error","message":"Error registering user: Invalid token signature: eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2NmYwNzUxZjc4NDA2MDY3OTliMWFkZjllOWZiNjBkZmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDE2MjA2NTc1NTY2MDg4MjUzODUiLCJlbWFpbCI6ImhlbWFhdGFyNjM2QGdtYWlsLmNvbSIsImVtWFpbX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiR0FTUlV3YUdnSkY4N004SzZBZy1PZyIsImlhdCI6MTc0MzIwMjkwNiwiZXhwIjoxNzQzMjA2NTA2fQ.AYcJyCaRapLsHmDSuXCBigdd4Wa0P9eoS_kpgtn9qtVobcRPr9t6mEQ6reBOPWa4OZB1pYbU3rrc7sDXKbXvoG-K52w7yXUaxbi8qFUeV-zoPMHrwliMxgGcAofPee6PvyKBq8BdFcbXoVfRewtH3N4eaT2WBYFErwlmCMROZDasWhEfYVyyUfM2cYNPv1l1OE1jswkrc6uGoZ7CNC2CkA40f1anF5qeYIb1uYVhpuQtt-Acg4s3bQxNK19r5zauY8P-PJ74gcy61kyPujF3x8ktQZCbYdQd9aaUN3FjioB7rNWmAjDD9PRZP5FUghSfSVU2jSt3_mnvA0IZ2GX7Tw, Stack: Error: Invalid token signature: eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2NmYwNzUxZjc4NDA2MDY3OTliMWFkZjllOWZiNjBkZmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDE2MjA2NTc1NTY2MDg4MjUzODUiLCJlbWFpbCI6ImhlbWFhdGFyNjM2QGdtYWlsLmNvbSIsImVtWFpbX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiR0FTUlV3YUdnSkY4N004SzZBZy1PZyIsImlhdCI6MTc0MzIwMjkwNiwiZXhwIjoxNzQzMjA2NTA2fQ.AYcJyCaRapLsHmDSuXCBigdd4Wa0P9eoS_kpgtn9qtVobcRPr9t6mEQ6reBOPWa4OZB1pYbU3rrc7sDXKbXvoG-K52w7yXUaxbi8qFUeV-zoPMHrwliMxgGcAofPee6PvyKBq8BdFcbXoVfRewtH3N4eaT2WBYFErwlmCMROZDasWhEfYVyyUfM2cYNPv1l1OE1jswkrc6uGoZ7CNC2CkA40f1anF5qeYIb1uYVhpuQtt-Acg4s3bQxNK19r5zauY8P-PJ74gcy61kyPujF3x8ktQZCbYdQd9aaUN3FjioB7rNWmAjDD9PRZP5FUghSfSVU2jSt3_mnvA0IZ2GX7Tw\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:695:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:23)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:05:01.771Z"}
+{"level":"error","message":"Registration error: Invalid token signature: eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2NmYwNzUxZjc4NDA2MDY3OTliMWFkZjllOWZiNjBkZmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDE2MjA2NTc1NTY2MDg4MjUzODUiLCJlbWFpbCI6ImhlbWFhdGFyNjM2QGdtYWlsLmNvbSIsImVtWFpbX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiR0FTUlV3YUdnSkY4N004SzZBZy1PZyIsImlhdCI6MTc0MzIwMjkwNiwiZXhwIjoxNzQzMjA2NTA2fQ.AYcJyCaRapLsHmDSuXCBigdd4Wa0P9eoS_kpgtn9qtVobcRPr9t6mEQ6reBOPWa4OZB1pYbU3rrc7sDXKbXvoG-K52w7yXUaxbi8qFUeV-zoPMHrwliMxgGcAofPee6PvyKBq8BdFcbXoVfRewtH3N4eaT2WBYFErwlmCMROZDasWhEfYVyyUfM2cYNPv1l1OE1jswkrc6uGoZ7CNC2CkA40f1anF5qeYIb1uYVhpuQtt-Acg4s3bQxNK19r5zauY8P-PJ74gcy61kyPujF3x8ktQZCbYdQd9aaUN3FjioB7rNWmAjDD9PRZP5FUghSfSVU2jSt3_mnvA0IZ2GX7Tw","timestamp":"2025-03-28T23:05:01.773Z"}
+{"level":"info","message":"Attempting to register user with email: mohamed@example.com","timestamp":"2025-03-28T23:11:56.701Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"cc961348-ef99-4ce3-aca0-0796f91b9780\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"mohamed@example.com\"}","timestamp":"2025-03-28T23:11:56.823Z"}
+{"level":"error","message":"Error registering user: Wrong recipient, payload audience != requiredAudience, Stack: Error: Wrong recipient, payload audience != requiredAudience\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:750:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:23)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:11:56.840Z"}
+{"level":"error","message":"Registration error: Wrong recipient, payload audience != requiredAudience","timestamp":"2025-03-28T23:11:56.841Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar636@gmail.com","timestamp":"2025-03-28T23:12:16.810Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"ba576ab5-3a22-417f-9ed1-8ea9217de206\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"hemaatar636@gmail.com\"}","timestamp":"2025-03-28T23:12:16.826Z"}
+{"level":"error","message":"Error registering user: Wrong recipient, payload audience != requiredAudience, Stack: Error: Wrong recipient, payload audience != requiredAudience\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:750:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:23)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:12:16.827Z"}
+{"level":"error","message":"Registration error: Wrong recipient, payload audience != requiredAudience","timestamp":"2025-03-28T23:12:16.827Z"}
+{"level":"info","message":"Attempting to register user with email: mohamed@example.com","timestamp":"2025-03-28T23:15:59.573Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"08ddbf24-4587-4c17-81d1-8f3b7e0625e5\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"mohamed@example.com\"}","timestamp":"2025-03-28T23:15:59.721Z"}
+{"level":"error","message":"Error registering user: Wrong recipient, payload audience != requiredAudience, Stack: Error: Wrong recipient, payload audience != requiredAudience\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:750:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:23)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:15:59.739Z"}
+{"level":"error","message":"Registration error: Wrong recipient, payload audience != requiredAudience","timestamp":"2025-03-28T23:15:59.740Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar636@gmail.com","timestamp":"2025-03-28T23:16:19.040Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"a643c943-cfb2-4156-9534-19ad3045e93e\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"hemaatar636@gmail.com\"}","timestamp":"2025-03-28T23:16:19.064Z"}
+{"level":"error","message":"Error registering user: Wrong recipient, payload audience != requiredAudience, Stack: Error: Wrong recipient, payload audience != requiredAudience\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:750:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:23)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:16:19.065Z"}
+{"level":"error","message":"Registration error: Wrong recipient, payload audience != requiredAudience","timestamp":"2025-03-28T23:16:19.065Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar636@gmail.com","timestamp":"2025-03-28T23:19:54.195Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"80021216-0383-453a-b02d-8d6bce90c7d3\",\"first_name\":\"Mohamed\",\"last_name\":\"Hassan\",\"username\":\"mohamedhassan\",\"email\":\"hemaatar636@gmail.com\"}","timestamp":"2025-03-28T23:19:54.295Z"}
+{"level":"error","message":"Error registering user: Wrong recipient, payload audience != requiredAudience, Stack: Error: Wrong recipient, payload audience != requiredAudience\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:750:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:23)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:19:54.309Z"}
+{"level":"error","message":"Registration error: Wrong recipient, payload audience != requiredAudience","timestamp":"2025-03-28T23:19:54.309Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar636@gmail.com","timestamp":"2025-03-28T23:20:20.716Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"ce6f80f0-4d2d-4ac7-8620-98b858c8cd0c\",\"first_name\":\"Hema\",\"last_name\":\"atar\",\"username\":\"hemaatar\",\"email\":\"hemaatar636@gmail.com\"}","timestamp":"2025-03-28T23:20:20.747Z"}
+{"level":"error","message":"Error registering user: Wrong recipient, payload audience != requiredAudience, Stack: Error: Wrong recipient, payload audience != requiredAudience\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:750:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:23)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:20:20.754Z"}
+{"level":"error","message":"Registration error: Wrong recipient, payload audience != requiredAudience","timestamp":"2025-03-28T23:20:20.757Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-28T23:22:20.971Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-28T23:22:22.352Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-28T23:22:22.359Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar636@gmail.com","timestamp":"2025-03-28T23:22:24.546Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"70efee6f-3287-486a-b2c4-c56fb06840c4\",\"first_name\":\"Hema\",\"last_name\":\"atar\",\"username\":\"hemaatar\",\"email\":\"hemaatar636@gmail.com\"}","timestamp":"2025-03-28T23:22:24.565Z"}
+{"level":"error","message":"Error registering user: Can't parse token payload 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2NmYwNzUxZjc4NDA2MDY3OTliMWFkZjllOWZiNjBkZmIiLCJ0eXAiOiJKV1QifQ, Stack: SyntaxError: Can't parse token payload 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2NmYwNzUxZjc4NDA2MDY3OTliMWFkZjllOWZiNjBkZmIiLCJ0eXAiOiJKV1QifQ\n    at JSON.parse (<anonymous>)\n    at OAuth2Client.verifySignedJwtWithCertsAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:674:28)\n    at OAuth2Client.verifyIdTokenAsync (/mnt/d/Projects/Traveler_Bloggers_Platform/node_modules/google-auth-library/build/src/auth/oauth2client.js:508:34)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:59:32)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-28T23:22:25.120Z"}
+{"level":"error","message":"Registration error: Can't parse token payload 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2NmYwNzUxZjc4NDA2MDY3OTliMWFkZjllOWZiNjBkZmIiLCJ0eXAiOiJKV1QifQ","timestamp":"2025-03-28T23:22:25.122Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar636@gmail.com","timestamp":"2025-03-28T23:29:25.673Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"b3633c92-8528-4693-b652-c55c9ef6fd16\",\"first_name\":\"Hema\",\"last_name\":\"atar\",\"username\":\"hemaatar\",\"email\":\"hemaatar636@gmail.com\"}","timestamp":"2025-03-28T23:29:26.008Z"}
+{"level":"info","message":"Google OAuth verified for user: hemaatar636@gmail.com","timestamp":"2025-03-28T23:29:26.095Z"}
+{"level":"debug","message":"Full user data before creation: {\"id\":\"b3633c92-8528-4693-b652-c55c9ef6fd16\",\"first_name\":\"Hema\",\"last_name\":\"Atar\",\"username\":\"hemaatar\",\"email\":\"hemaatar636@gmail.com\",\"bio\":null,\"gender\":null,\"social_media\":{},\"interested_categories\":[]}","timestamp":"2025-03-28T23:29:26.097Z"}
+{"level":"info","message":"User created in DB: b3633c92-8528-4693-b652-c55c9ef6fd16","timestamp":"2025-03-28T23:29:26.203Z"}
+{"level":"info","message":"Token generated for user: hemaatar636@gmail.com","timestamp":"2025-03-28T23:29:26.228Z"}
+{"level":"info","message":"User registered successfully: hemaatar636@gmail.com, ID: b3633c92-8528-4693-b652-c55c9ef6fd16","timestamp":"2025-03-28T23:29:26.228Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar636@gmail.com","timestamp":"2025-03-29T03:52:51.233Z"}
+{"level":"warn","message":"Registration failed: Email hemaatar636@gmail.com already exists","timestamp":"2025-03-29T03:52:51.485Z"}
+{"level":"error","message":"Error registering user: Email already exists, Stack: Error: Email already exists\n    at AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:37:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-29T03:52:51.491Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed@example.com","timestamp":"2025-03-29T03:53:36.808Z"}
+{"level":"warn","message":"Registration failed: Email ahmed@example.com already exists","timestamp":"2025-03-29T03:53:36.825Z"}
+{"level":"error","message":"Error registering user: Email already exists, Stack: Error: Email already exists\n    at AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:37:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-29T03:53:36.826Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed1@example.com","timestamp":"2025-03-29T03:53:39.657Z"}
+{"level":"warn","message":"Registration failed: Username hemaatar already taken","timestamp":"2025-03-29T03:53:39.662Z"}
+{"level":"error","message":"Error registering user: Username already taken, Stack: Error: Username already taken\n    at AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:44:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-29T03:53:39.662Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed1@example.com","timestamp":"2025-03-29T03:53:50.093Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"e7964394-4f00-4109-a5b0-5555212a21e4\",\"first_name\":\"atar\",\"last_name\":\"hema\",\"username\":\"hemaatar1\",\"email\":\"ahmed1@example.com\"}","timestamp":"2025-03-29T03:53:50.124Z"}
+{"level":"info","message":"Password hashed for user: ahmed1@example.com","timestamp":"2025-03-29T03:53:50.218Z"}
+{"level":"debug","message":"Full user data before creation: {\"id\":\"e7964394-4f00-4109-a5b0-5555212a21e4\",\"first_name\":\"atar\",\"last_name\":\"hema\",\"username\":\"hemaatar1\",\"email\":\"ahmed1@example.com\",\"password\":\"$2b$10$3GySNh5v2/356cPUVXX1Me.jyIUukW7e8n4f1F3L/PIYsMi7Xiaea\",\"bio\":null,\"gender\":null,\"social_media\":{},\"interested_categories\":[]}","timestamp":"2025-03-29T03:53:50.219Z"}
+{"level":"info","message":"User created in DB: e7964394-4f00-4109-a5b0-5555212a21e4","timestamp":"2025-03-29T03:53:50.261Z"}
+{"level":"info","message":"Token generated for user: ahmed1@example.com","timestamp":"2025-03-29T03:53:50.280Z"}
+{"level":"info","message":"User registered successfully: ahmed1@example.com, ID: e7964394-4f00-4109-a5b0-5555212a21e4","timestamp":"2025-03-29T03:53:50.280Z"}
+{"level":"info","message":"Attempting to register user with email: ahmed1@example.com","timestamp":"2025-03-29T03:55:26.230Z"}
+{"level":"warn","message":"Registration failed: Email ahmed1@example.com already exists","timestamp":"2025-03-29T03:55:26.315Z"}
+{"level":"error","message":"Error registering user: Email already exists, Stack: Error: Email already exists\n    at AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:37:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-29T03:55:26.317Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T04:22:18.342Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T04:22:19.180Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T04:22:19.185Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T04:22:57.699Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T04:22:58.460Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T04:22:58.462Z"}
+{"level":"info","message":"Attempting to login user with email: ahmed1@example.com","timestamp":"2025-03-29T04:23:00.324Z"}
+{"level":"info","message":"Password verified for user: ahmed1@example.com","timestamp":"2025-03-29T04:23:00.402Z"}
+{"level":"info","message":"Login successful for user: ahmed1@example.com, ID: e7964394-4f00-4109-a5b0-5555212a21e4","timestamp":"2025-03-29T04:23:00.410Z"}
+{"level":"info","message":"Attempting to login user with email: hemaatar636@gmail.com","timestamp":"2025-03-29T04:25:43.324Z"}
+{"level":"info","message":"Google OAuth verified for user: hemaatar636@gmail.com","timestamp":"2025-03-29T04:25:44.115Z"}
+{"level":"info","message":"Login successful for user: hemaatar636@gmail.com, ID: b3633c92-8528-4693-b652-c55c9ef6fd16","timestamp":"2025-03-29T04:25:44.125Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T05:14:27.280Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T05:14:28.701Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T05:14:28.707Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T05:15:58.260Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T05:15:59.331Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T05:15:59.333Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T07:01:40.571Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T07:01:41.993Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T07:01:41.999Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T07:12:40.462Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T07:12:41.528Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T07:12:41.533Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T07:17:43.986Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T07:17:45.445Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T07:17:45.449Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar4@gmail.com","timestamp":"2025-03-29T07:17:46.205Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"39523ae3-64c5-4c6d-846d-6c9a5fb0307b\",\"first_name\":\"Hema\",\"last_name\":\"Atar\",\"username\":\"hemaatar5\",\"email\":\"hemaatar4@gmail.com\"}","timestamp":"2025-03-29T07:17:46.232Z"}
+{"level":"info","message":"Step 4: Facebook OAuth verified for user: hemaatar4@gmail.com","timestamp":"2025-03-29T07:17:46.755Z"}
+{"level":"debug","message":"Full user data before creation: {\"id\":\"39523ae3-64c5-4c6d-846d-6c9a5fb0307b\",\"first_name\":\"Traveler\",\"last_name\":\"Bloggers\",\"username\":\"hemaatar5\",\"email\":\"hemaatar4@gmail.com\",\"bio\":null,\"gender\":null,\"social_media\":{},\"interested_categories\":[]}","timestamp":"2025-03-29T07:17:46.755Z"}
+{"level":"info","message":"User created in DB: 39523ae3-64c5-4c6d-846d-6c9a5fb0307b","timestamp":"2025-03-29T07:17:46.785Z"}
+{"level":"info","message":"Token generated for user: hemaatar4@gmail.com","timestamp":"2025-03-29T07:17:46.792Z"}
+{"level":"info","message":"User registered successfully: hemaatar4@gmail.com, ID: 39523ae3-64c5-4c6d-846d-6c9a5fb0307b","timestamp":"2025-03-29T07:17:46.792Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T07:20:07.805Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T07:20:09.006Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T07:20:09.011Z"}
+{"level":"info","message":"Attempting to login user with email: hemaatar4@gmail.com","timestamp":"2025-03-29T07:21:20.232Z"}
+{"level":"info","message":"Facebook OAuth verified for user: hemaatar4@gmail.com","timestamp":"2025-03-29T07:21:21.295Z"}
+{"level":"info","message":"Login successful for user: hemaatar4@gmail.com, ID: 39523ae3-64c5-4c6d-846d-6c9a5fb0307b","timestamp":"2025-03-29T07:21:21.382Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T07:38:29.480Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T07:38:30.384Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T07:38:30.389Z"}
+{"level":"info","message":"Attempting to login user with email: hemaatar4@gmail.com","timestamp":"2025-03-29T07:42:10.289Z"}
+{"level":"info","message":"Facebook OAuth verified for user: hemaatar4@gmail.com","timestamp":"2025-03-29T07:42:11.216Z"}
+{"level":"info","message":"Login successful for user: hemaatar4@gmail.com, ID: 39523ae3-64c5-4c6d-846d-6c9a5fb0307b","timestamp":"2025-03-29T07:42:11.239Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T08:42:59.846Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T08:43:00.654Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T08:43:27.741Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T08:43:28.611Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T08:46:30.418Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T08:46:31.335Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T08:46:31.338Z"}
+{"level":"info","message":"Attempting to login user with email: hemaatar4@gmail.com","timestamp":"2025-03-29T08:53:01.995Z"}
+{"level":"info","message":"Facebook OAuth verified for user: hemaatar4@gmail.com","timestamp":"2025-03-29T08:53:02.897Z"}
+{"level":"info","message":"Login successful for user: hemaatar4@gmail.com, ID: 39523ae3-64c5-4c6d-846d-6c9a5fb0307b","timestamp":"2025-03-29T08:53:02.914Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-29T09:04:52.096Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-29T09:04:52.845Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-29T09:04:52.849Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-30T03:51:05.155Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-30T03:51:06.731Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-30T03:51:06.735Z"}
+{"level":"info","message":"Attempting to login user with email: hemaatar4@gmail.com","timestamp":"2025-03-30T03:52:44.087Z"}
+{"level":"error","message":"Error verifying Facebook token: Request failed with status code 400","timestamp":"2025-03-30T03:52:44.629Z"}
+{"level":"error","message":"Error logging in user: Invalid Facebook token, Stack: Error: Invalid Facebook token\n    at AuthService.loginUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:181:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.login (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:34:28)","timestamp":"2025-03-30T03:52:44.632Z"}
+{"level":"error","message":"Error in login: Invalid Facebook token","timestamp":"2025-03-30T03:52:44.634Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar4@gmail.com","timestamp":"2025-03-30T03:57:27.123Z"}
+{"level":"warn","message":"Registration failed: Email hemaatar4@gmail.com already exists","timestamp":"2025-03-30T03:57:27.224Z"}
+{"level":"error","message":"Error registering user: Email already exists, Stack: Error: Email already exists\n    at AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:39:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-30T03:57:27.226Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar7@gmail.com","timestamp":"2025-03-30T03:57:34.018Z"}
+{"level":"warn","message":"Registration failed: Username hemaatar5 already taken","timestamp":"2025-03-30T03:57:34.025Z"}
+{"level":"error","message":"Error registering user: Username already taken, Stack: Error: Username already taken\n    at AuthService.registerUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:46:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.register (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:10:28)","timestamp":"2025-03-30T03:57:34.026Z"}
+{"level":"info","message":"Attempting to register user with email: hemaatar7@gmail.com","timestamp":"2025-03-30T03:57:39.227Z"}
+{"level":"debug","message":"User data initialized: {\"id\":\"c2a321f6-d269-4f28-a114-58101431a259\",\"first_name\":\"Hema\",\"last_name\":\"Atar\",\"username\":\"heemaatar5\",\"email\":\"hemaatar7@gmail.com\"}","timestamp":"2025-03-30T03:57:39.234Z"}
+{"level":"info","message":"Password hashed for user: hemaatar7@gmail.com","timestamp":"2025-03-30T03:57:39.310Z"}
+{"level":"debug","message":"Full user data before creation: {\"id\":\"c2a321f6-d269-4f28-a114-58101431a259\",\"first_name\":\"Hema\",\"last_name\":\"Atar\",\"username\":\"heemaatar5\",\"email\":\"hemaatar7@gmail.com\",\"password\":\"$2b$10$NI7bpFwaw6RcSppybagh0ue2J1eUGcuy2wJgMzrdraJQts7d.ZT9O\",\"bio\":null,\"gender\":null,\"social_media\":{},\"interested_categories\":[]}","timestamp":"2025-03-30T03:57:39.311Z"}
+{"level":"info","message":"User created in DB: c2a321f6-d269-4f28-a114-58101431a259","timestamp":"2025-03-30T03:57:39.356Z"}
+{"level":"info","message":"Token generated for user: hemaatar7@gmail.com","timestamp":"2025-03-30T03:57:39.372Z"}
+{"level":"info","message":"User registered successfully: hemaatar7@gmail.com, ID: c2a321f6-d269-4f28-a114-58101431a259","timestamp":"2025-03-30T03:57:39.372Z"}
+{"level":"info","message":"Attempting to login user with email: hemaatar4@gmail.com","timestamp":"2025-03-30T04:02:28.010Z"}
+{"level":"error","message":"Error verifying Facebook token: Request failed with status code 400","timestamp":"2025-03-30T04:02:28.679Z"}
+{"level":"error","message":"Error logging in user: Invalid Facebook token, Stack: Error: Invalid Facebook token\n    at AuthService.loginUser (/mnt/d/Projects/Traveler_Bloggers_Platform/services/authService.js:181:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.login (/mnt/d/Projects/Traveler_Bloggers_Platform/controllers/authController.js:34:28)","timestamp":"2025-03-30T04:02:28.680Z"}
+{"level":"error","message":"Error in login: Invalid Facebook token","timestamp":"2025-03-30T04:02:28.681Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-30T04:08:58.290Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-30T04:09:00.460Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-30T04:09:00.468Z"}
+{"level":"info","message":"Attempting to login user with email: hemaatar7@gmail.com","timestamp":"2025-03-30T04:11:23.392Z"}
+{"level":"info","message":"Password verified for user: hemaatar7@gmail.com","timestamp":"2025-03-30T04:11:23.616Z"}
+{"level":"info","message":"Login successful for user: hemaatar7@gmail.com, ID: c2a321f6-d269-4f28-a114-58101431a259","timestamp":"2025-03-30T04:11:23.656Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-30T04:17:07.201Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-30T04:17:08.385Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-30T04:17:08.390Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-30T04:23:53.391Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-30T04:23:54.771Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-30T04:24:42.100Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-30T04:24:43.278Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-03-30T04:24:43.281Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-03-30T04:28:15.509Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-03-30T04:28:16.889Z"}
