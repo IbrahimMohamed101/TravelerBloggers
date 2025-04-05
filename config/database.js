@@ -44,9 +44,36 @@ Object.keys(db).forEach((modelName) => {
     }
 });
 
-// اختبار الاتصال
+// اختبار الاتصال وتهيئة الجدول
 sequelize.authenticate()
-    .then(() => console.log('Database connected successfully'))
-    .catch((err) => console.error('Database connection error:', err));
+    .then(async () => {
+        console.log('Database connected successfully');
+        if (process.env.NODE_ENV === 'development') {
+            // First create all tables without foreign key constraints
+            await sequelize.sync({
+                alter: true,
+                hooks: false,
+                constraints: false
+            });
+
+            // Then add foreign key constraints
+            try {
+                await sequelize.query(`
+                    ALTER TABLE admin_logs 
+                    ADD CONSTRAINT admin_logs_admin_id_fkey 
+                    FOREIGN KEY (admin_id) REFERENCES users(id);
+                `);
+                console.log('Foreign key constraints added successfully');
+            } catch (err) {
+                console.error('Error adding foreign key constraints:', err);
+            }
+
+            console.log('Database tables fully synchronized');
+        }
+    })
+    .catch((err) => {
+        console.error('Database connection error:', err);
+        process.exit(1); // Exit with error code
+    });
 
 module.exports = db;
