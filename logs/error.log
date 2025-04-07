@@ -57,3 +57,10 @@
 {"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-04-05T00:26:14.635Z"}
 {"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-04-05T00:28:07.386Z"}
 {"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-04-05T00:28:55.059Z"}
+{"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-04-05T01:35:45.910Z"}
+{"level":"error","message":"Error syncing database: relation \"public.users\" does not exist","timestamp":"2025-04-05T01:38:32.344Z"}
+{"level":"error","message":"Error syncing database: Validation error","timestamp":"2025-04-05T01:42:08.580Z"}
+{"level":"error","message":"Error syncing database: relation \"public.posts\" does not exist","timestamp":"2025-04-05T01:43:44.153Z"}
+{"level":"error","message":"Error syncing database: could not open relation with OID 16560","timestamp":"2025-04-07T08:01:50.223Z"}
+{"level":"error","message":"Error logging in user: Invalid email or password","timestamp":"2025-04-07T08:14:20.993Z"}
+{"level":"error","message":"Error in login: Invalid email or password","timestamp":"2025-04-07T08:14:20.994Z"}

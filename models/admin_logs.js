@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('admin_logs', {
     id: {
       type: DataTypes.UUID,
@@ -8,11 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     admin_id: {
       type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
+      allowNull: false
     },
     action: {
       type: DataTypes.STRING(255),

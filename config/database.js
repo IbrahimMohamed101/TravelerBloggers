@@ -8,14 +8,24 @@ const sequelize = new Sequelize(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
     {
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
+        host: 'db', // Use Docker service name
+        port: 5432, // Internal container port
         dialect: 'postgres',
         logging: false,
+        retry: {
+            match: [
+                /ECONNREFUSED/,
+                /ETIMEDOUT/,
+                /EHOSTUNREACH/,
+                /ECONNRESET/,
+            ],
+            max: 5, // Maximum retry attempts
+            timeout: 60000 // Timeout per attempt (ms)
+        },
         pool: {
             max: 20,
             min: 0,
-            acquire: 30000,
+            acquire: 60000, // Increased from 30000
             idle: 10000,
         },
     }
@@ -48,27 +58,17 @@ Object.keys(db).forEach((modelName) => {
 sequelize.authenticate()
     .then(async () => {
         console.log('Database connected successfully');
-        if (process.env.NODE_ENV === 'development') {
-            // First create all tables without foreign key constraints
-            await sequelize.sync({
-                alter: true,
-                hooks: false,
-                constraints: false
-            });
+        try {
+            // Sync all models in proper order
+            await db.users.sync();
+            await db.blogs.sync();
+            await db.posts.sync();
+            await db.comments.sync();
 
-            // Then add foreign key constraints
-            try {
-                await sequelize.query(`
-                    ALTER TABLE admin_logs 
-                    ADD CONSTRAINT admin_logs_admin_id_fkey 
-                    FOREIGN KEY (admin_id) REFERENCES users(id);
-                `);
-                console.log('Foreign key constraints added successfully');
-            } catch (err) {
-                console.error('Error adding foreign key constraints:', err);
-            }
-
-            console.log('Database tables fully synchronized');
+            console.log('Database tables synchronized successfully');
+        } catch (error) {
+            console.error('Database sync failed:', error);
+            throw error;
         }
     })
     .catch((err) => {

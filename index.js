@@ -37,9 +37,32 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Swagger
-const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Swagger with error handling
+try {
+    const swaggerPath = path.join(__dirname, 'swagger.yaml');
+    console.log(`Loading Swagger from: ${swaggerPath}`);
+
+    if (!fs.existsSync(swaggerPath)) {
+        throw new Error('swagger.yaml file not found');
+    }
+
+    const swaggerDocument = YAML.load(swaggerPath);
+    console.log('Swagger document loaded successfully');
+
+    app.use('/api-docs',
+        swaggerUi.serve,
+        (req, res, next) => {
+            console.log('Accessing Swagger UI');
+            next();
+        },
+        swaggerUi.setup(swaggerDocument)
+    );
+} catch (err) {
+    console.error('Swagger setup error:', err);
+    app.use('/api-docs', (req, res) => {
+        res.status(500).json({ error: 'API documentation unavailable', details: err.message });
+    });
+}
 
 // Rate Limiter
 const limiter = rateLimit({
