@@ -7,7 +7,8 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - NODE_ENV=development
-      - DB_HOST=db # Use service name as host
+      - DB_HOST=db # Use service name directly
+    restart: on-failure
     volumes:
       - .:/app
       - /app/node_modules
@@ -16,6 +17,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - app-network
 
@@ -29,13 +35,15 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
-    networks:
-      - app-network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    hostname: db
+    container_name: db
+    networks:
+      - app-network
 
 networks:
   app-network:

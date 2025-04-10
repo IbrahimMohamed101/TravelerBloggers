@@ -1,0 +1,29 @@
+{
+    "development": {
+        "username": "postgres",
+        "password": "1234",
+        "database": "traveler_bloggers_platform",
+        "host": "localhost",
+        "port": 5433,
+        "dialect": "postgres",
+        "logging": false
+    },
+    "test": {
+        "username": "postgres",
+        "password": "1234",
+        "database": "traveler_bloggers_platform_test",
+        "host": "localhost",
+        "port": 5433,
+        "dialect": "postgres",
+        "logging": false
+    },
+    "production": {
+        "username": "postgres",
+        "password": "1234",
+        "database": "traveler_bloggers_platform_prod",
+        "host": "localhost",
+        "port": 5433,
+        "dialect": "postgres",
+        "logging": false
+    }
+}

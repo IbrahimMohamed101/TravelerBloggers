@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('users', {
+  return sequelize.define('Users', {
     id: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -25,9 +25,14 @@ module.exports = function (sequelize, DataTypes) {
       unique: "users_email_key"
     },
     role: {
-      type: DataTypes.ENUM("admin", "general_user", "blogger"),
-      allowNull: true,
-      defaultValue: "general_user"
+      type: DataTypes.ENUM("super_admin", "admin", "content_manager", "user"),
+      allowNull: false,
+      defaultValue: "user"
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
     },
     bio: {
       type: DataTypes.STRING(500),
@@ -54,8 +59,27 @@ module.exports = function (sequelize, DataTypes) {
     password: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    email_verified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    email_verified_at: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    last_login_at: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
+    associate: function (models) {
+      this.hasMany(models.AuditLog, {
+        foreignKey: 'user_id',
+        as: 'auditLogs'
+      });
+    },
     sequelize,
     tableName: 'users',
     schema: 'public',

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المصادقة المتقدم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            min-height: 80vh;
+        }
+
+        .auth-illustration {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 2rem;
+            display: none;
+        }
+
+        .auth-form {
+            flex: 1;
+            padding: 3rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: #6c757d;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .input-icon input {
+            padding-left: 3rem;
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            color: white;
+            background-color: var(--primary);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+
+        .social-login {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .social-login p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .social-login p::before,
+        .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #dee2e6;
+        }
+
+        .social-login p::before {
+            right: 0;
+        }
+
+        .social-login p::after {
+            left: 0;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+
+        .google {
+            background-color: #db4437;
+        }
+
+        .facebook {
+            background-color: #4267b2;
+        }
+
+        .discord {
+            background-color: #5865f2;
+        }
+
+        .forgot-password {
+            text-align: left;
+            margin-top: 0.5rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (min-width: 992px) {
+            .auth-illustration {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-illustration">
+                <div>
+                    <h2>مرحبًا بك في نظامنا</h2>
+                    <p>نظام المصادقة الآمن والمتكامل</p>
+                </div>
+            </div>
+
+            <div class="auth-form">
+                <div class="auth-header">
+                    <h1>نظام المصادقة</h1>
+                    <p>سجل الدخول أو أنشئ حسابًا جديدًا</p>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="showTab('login')">تسجيل الدخول</div>
+                    <div class="tab" onclick="showTab('register')">تسجيل جديد</div>
+                </div>
+
+                <div id="alert" class="alert" style="display: none;"></div>
+
+                <div id="login" class="tab-content active">
+                    <form id="loginForm">
+                        <div class="form-group input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="البريد الإلكتروني"
+                                required>
+                        </div>
+
+                        <div class="form-group input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="كلمة المرور"
+                                required>
+                        </div>
+
+                        <div class="forgot-password">
+                            <a href="#" onclick="showTab('forgot-password')">نسيت كلمة المرور؟</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                    </form>
+
+                    <div class="social-login">
+                        <p>أو سجل الدخول باستخدام</p>
+                        <div class="social-icons">
+                            <div class="social-icon google" onclick="loginWithGoogle()">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="social-icon facebook" onclick="loginWithFacebook()">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="social-icon discord" onclick="loginWithDiscord()">
+                                <i class="fab fa-discord"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="register" class="tab-content">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <input type="email" id="registerEmail" class="form-control" placeholder="البريد الإلكتروني"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="registerUsername" class="form-control" placeholder="اسم المستخدم"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="firstName" class="form-control" placeholder="الاسم الأول" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="lastName" class="form-control" placeholder="الاسم الأخير" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" id="registerPassword" class="form-control" placeholder="كلمة المرور"
+                                required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">تسجيل حساب جديد</button>
+                    </form>
+                </div>
+
+                <div id="forgot-password" class="tab-content">
+                    <form id="forgotPasswordForm">
+                        <div class="form-group">
+                            <input type="email" id="forgotEmail" class="form-control" placeholder="البريد الإلكتروني"
+                                required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">إرسال رابط إعادة تعيين</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show tab function
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            document.getElementById('alert').style.display = 'none';
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+        }
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/users/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    showAlert('تم تسجيل الدخول بنجاح', 'success');
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 2000);
+                } else {
+                    showAlert(data.message || 'خطأ في تسجيل الدخول', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('حدث خطأ أثناء الاتصال بالخادم', 'danger');
+            }
+        });
+
+        // Register form
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = {
+                email: document.getElementById('registerEmail').value,
+                username: document.getElementById('registerUsername').value,
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                password: document.getElementById('registerPassword').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/users/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('تم التسجيل بنجاح', 'success');
+                    setTimeout(() => {
+                        showTab('login');
+                    }, 2000);
+                } else {
+                    showAlert(data.message || 'خطأ في التسجيل', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('حدث خطأ أثناء الاتصال بالخادم', 'danger');
+            }
+        });
+
+        // Forgot password form
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/users/auth/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 'success');
+                } else {
+                    showAlert(data.message || 'خطأ في إرسال رابط إعادة التعيين', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('حدث خطأ أثناء الاتصال بالخادم', 'danger');
+            }
+        });
+
+        // Social login functions
+        function loginWithGoogle() {
+            // Implement Google OAuth
+            window.location.href = 'http://localhost:3000/users/auth/google';
+        }
+
+        function loginWithFacebook() {
+            // Implement Facebook OAuth
+            window.location.href = 'http://localhost:3000/users/auth/facebook';
+        }
+
+        function loginWithDiscord() {
+            // Implement Discord OAuth
+            window.location.href = 'http://localhost:3000/users/auth/discord';
+        }
+
+        // Check if user is already logged in
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '/dashboard.html';
+            }
+        }
+
+        // Run check on page load
+        checkAuth();
+    </script>
+</body>
+
+</html>

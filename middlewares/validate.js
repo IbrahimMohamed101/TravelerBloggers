@@ -22,6 +22,7 @@ const registerSchema = Joi.object({
     gender: Joi.string().valid('male', 'female', 'other').optional(),
     social_media: Joi.object().optional(),
     interested_categories: Joi.array().items(Joi.string()).optional(),
+    role: Joi.string().valid('super_admin', 'admin', 'content_manager', 'user').default('user').optional(),
 }).xor('password', 'google_token', 'facebook_token'); // لازم واحد منهم فقط
 
 // مخطط تسجيل الدخول

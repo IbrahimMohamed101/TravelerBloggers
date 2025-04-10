@@ -104,8 +104,8 @@ app.use((err, req, res, next) => {
 });
 
 // قراءة الشهادة والمفتاح لتشغيل HTTPS
-const privateKey = fs.readFileSync('key.pem', 'utf8');
-const certificate = fs.readFileSync('cert.pem', 'utf8');
+const privateKey = fs.readFileSync('certs/key.pem', 'utf8');
+const certificate = fs.readFileSync('certs/cert.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 // إنشاء خادوم HTTPS

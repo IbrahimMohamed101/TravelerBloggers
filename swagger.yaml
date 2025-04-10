@@ -1,234 +1,126 @@
 openapi: 3.0.3
 info:
   title: Traveler Bloggers Platform API
-  description: API documentation for the Traveler Bloggers Platform
   version: 1.0.0
+  description: API documentation for the Traveler Bloggers Platform authentication system
+
 servers:
-  - url: http://localhost:3000
-    description: Local server
+  - url: http://localhost:3000/api
+    description: Development server
+
 paths:
-  /users/register:
+  /auth/register:
     post:
+      tags: [Authentication]
       summary: Register a new user
-      description: Registers a new user in the system using either email/password, Google OAuth, or Facebook OAuth. The user must provide either a password, a Google token, or a Facebook token, but not more than one.
-      tags:
-        - Authentication
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - first_name
-                - last_name
-                - username
-                - email
-              properties:
-                first_name:
-                  type: string
-                  maxLength: 50
-                  example: Hema
-                  description: The user's first name
-                last_name:
-                  type: string
-                  maxLength: 50
-                  example: Atar
-                  description: The user's last name
-                username:
-                  type: string
-                  maxLength: 50
-                  example: hemaatar
-                  description: The user's unique username
-                email:
-                  type: string
-                  format: email
-                  maxLength: 100
-                  example: hemaatar636@gmail.com
-                  description: The user's email address (must be unique)
-                password:
-                  type: string
-                  example: Password123
-                  description: The user's password (required if google_token and facebook_token are not provided)
-                google_token:
-                  type: string
-                  example: eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2...
-                  description: Google OAuth ID token (required if password and facebook_token are not provided)
-                facebook_token:
-                  type: string
-                  example: EAAH2jZ...
-                  description: Facebook OAuth access token (required if password and google_token are not provided)
-              oneOf:
-                - required: [password]
-                - required: [google_token]
-                - required: [facebook_token]
+              $ref: '#/components/schemas/UserRegistration'
       responses:
         '201':
           description: User registered successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: User registered successfully
-                  user:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                        example: b3633c92-8528-4693-b652-c55c9ef6fd16
-                      first_name:
-                        type: string
-                        example: Hema
-                      last_name:
-                        type: string
-                        example: Atar
-                      username:
-                        type: string
-                        example: hemaatar
-                      email:
-                        type: string
-                        example: hemaatar636@gmail.com
-                      role:
-                        type: string
-                        example: general_user
-                  token:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                    description: JWT token for authentication
+                $ref: '#/components/schemas/AuthResponse'
         '400':
-          description: Bad request (validation error)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "\"password\" must be provided or \"google_token\" must be provided or \"facebook_token\" must be provided"
+          description: Invalid input
         '409':
-          description: Conflict (email or username already exists)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Email already exists
+          description: Email or username already exists
         '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Server error
-                  error:
-                    type: string
-                    example: Facebook token email mismatch
+          description: Server error
 
-  /users/login:
+  /auth/login:
     post:
-      summary: Log in a user
-      description: Logs in a user using either email/password, Google OAuth, or Facebook OAuth. The user must provide either a password, a Google token, or a Facebook token, but not more than one.
-      tags:
-        - Authentication
+      tags: [Authentication]
+      summary: Login a user
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  format: email
-                  maxLength: 100
-                  example: hemaatar636@gmail.com
-                  description: The user's email address
-                password:
-                  type: string
-                  example: Password123
-                  description: The user's password (required if google_token and facebook_token are not provided)
-                google_token:
-                  type: string
-                  example: eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMWYzYmM2...
-                  description: Google OAuth ID token (required if password and facebook_token are not provided)
-                facebook_token:
-                  type: string
-                  example: EAAH2jZ...
-                  description: Facebook OAuth access token (required if password and google_token are not provided)
-              oneOf:
-                - required: [password]
-                - required: [google_token]
-                - required: [facebook_token]
+              $ref: '#/components/schemas/UserLogin'
       responses:
         '200':
           description: User logged in successfully
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Server error
+
+  /auth/password-reset/request:
+    post:
+      tags: [Authentication]
+      summary: Request password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required: [email]
+      responses:
+        '200':
+          description: Password reset token generated
+          content:
+            application/json:
+              schema:
                 type: object
                 properties:
                   message:
                     type: string
-                    example: User logged in successfully
-                  user:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                        example: b3633c92-8528-4693-b652-c55c9ef6fd16
-                      first_name:
-                        type: string
-                        example: Hema
-                      last_name:
-                        type: string
-                        example: Atar
-                      username:
-                        type: string
-                        example: hemaatar
-                      email:
-                        type: string
-                        example: hemaatar636@gmail.com
-                      role:
-                        type: string
-                        example: general_user
                   token:
                     type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                    description: JWT token for authentication
-        '400':
-          description: Bad request (validation error)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "\"password\" must be provided or \"google_token\" must be provided or \"facebook_token\" must be provided"
-        '401':
-          description: Unauthorized (invalid credentials)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid email or password
+        '404':
+          description: User not found
         '500':
-          description: Internal server error
+          description: Server error
+
+  /auth/password-reset/confirm:
+    post:
+      tags: [Authentication]
+      summary: Confirm password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+                  minLength: 8
+              required: [token, newPassword]
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Invalid or expired token
+        '500':
+          description: Server error
+
+  /auth/verify-email/request:
+    post:
+      tags: [Authentication]
+      summary: Request email verification
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Email verification token generated
           content:
             application/json:
               schema:
@@ -236,7 +128,197 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Server error
-                  error:
+                  token:
                     type: string
-                    example: Facebook token email mismatch
+        '500':
+          description: Server error
+
+  /auth/verify-email/confirm:
+    post:
+      tags: [Authentication]
+      summary: Confirm email verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required: [token]
+      responses:
+        '200':
+          description: Email verified successfully
+        '400':
+          description: Invalid token
+        '500':
+          description: Server error
+
+  /auth/refresh-token:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+              required: [refreshToken]
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  token:
+                    type: string
+                  refreshToken:
+                    type: string
+        '401':
+          description: Invalid or expired refresh token
+        '500':
+          description: Server error
+
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: Logout user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+              required: [refreshToken]
+      responses:
+        '200':
+          description: Logged out successfully
+        '500':
+          description: Server error
+
+  /auth/sessions:
+    get:
+      tags: [Authentication]
+      summary: Get active sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Active sessions retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  sessions:
+                    type: array
+                    items:
+                      type: object
+        '500':
+          description: Server error
+    delete:
+      tags: [Authentication]
+      summary: Revoke a session
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+              required: [sessionId]
+      responses:
+        '200':
+          description: Session revoked successfully
+        '500':
+          description: Server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserRegistration:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        google_token:
+          type: string
+        facebook_token:
+          type: string
+        discord_token:
+          type: string
+      required: [first_name, last_name, username, email]
+
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        google_token:
+          type: string
+        facebook_token:
+          type: string
+        discord_token:
+          type: string
+      required: [email]
+
+    AuthResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            username:
+              type: string
+            email:
+              type: string
+            role:
+              type: string
+        token:
+          type: string

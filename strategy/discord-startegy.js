@@ -1,8 +1,7 @@
-const passport = require('passport');
 const { Strategy } = require('passport-discord');
 require('dotenv').config();
 
-module.exports = passport.use(
+module.exports = (passport) => passport.use(
     new Strategy({
         clientID: process.env.discord_Client_ID,
         clientSecret: process.env.discord_Client_Secret,
@@ -14,13 +13,7 @@ module.exports = passport.use(
     })
 );
 
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-    done(null, { id });
-});
+// Serialization handled in passport.js
 
 // Client ID 1356765327773667438
 

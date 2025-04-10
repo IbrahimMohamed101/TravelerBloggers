@@ -7,11 +7,13 @@ const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
 const db = require('./config/database');
-const authRoutes = require('./routes/authRoutes');
 const logger = require('./utils/logger');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+
+// Initialize container first
+const container = require('./config/container');
 
 require('dotenv').config();
 
@@ -80,8 +82,9 @@ app.get('/status', (req, res) => {
     });
 });
 
-// Routes
-app.use('/users', authRoutes);
+// Routes (must be required after container initialization)
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/v1/users', authRoutes);
 
 // Discord Auth
 app.get("/api/auth/discord", passport.authenticate("discord"));
@@ -110,15 +113,32 @@ if (USE_HTTPS) {
     logger.info('HTTP mode enabled');
 }
 
-// تهيئة Sequelize وتشغيل الخادوم
-db.sequelize
-    .sync({ force: false })
-    .then(() => {
+async function startServer() {
+    try {
+        // First ensure database models are loaded
+        if (!db.Users || !db.AuditLog) {
+            throw new Error('Database models not properly loaded');
+        }
+
+        // Then sync database
+        await db.sequelize.sync({ force: false });
         logger.info('Database synced successfully');
+
+        // Initialize container (depends on database)
+        await container.initialize();
+
+        // Initialize audit log service
+        const auditLogService = require('./services/auditLogService');
+        await auditLogService.init();
+
+        // Start server
         server.listen(PORT, () => {
             logger.info(`${USE_HTTPS ? 'HTTPS' : 'HTTP'} Server running on port ${PORT}`);
         });
-    })
-    .catch((err) => {
-        logger.error(`Error syncing database: ${err.message}`);
-    });
+    } catch (err) {
+        logger.error(`Server startup failed: ${err.message}`);
+        process.exit(1);
+    }
+}
+
+startServer();

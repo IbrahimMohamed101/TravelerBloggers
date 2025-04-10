@@ -35,17 +35,26 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// تحميل الموديلات تلقائيًا
-fs.readdirSync(path.join(__dirname, '../models'))
-    .filter((file) => file.endsWith('.js'))
-    .forEach((file) => {
-        try {
-            const model = require(path.join(__dirname, '../models', file))(sequelize, Sequelize.DataTypes);
-            db[model.name] = model;
-        } catch (error) {
-            console.error(`Error loading model ${file}:`, error);
-        }
-    });
+// Load models synchronously and verify
+const modelFiles = fs.readdirSync(path.join(__dirname, '../models'))
+    .filter((file) => file.endsWith('.js'));
+
+// Load core models first
+const coreModels = ['users.js', 'sessions.js', 'auditLog.js']; // Add other core models as needed
+const otherModels = modelFiles.filter(file => !coreModels.includes(file));
+
+// Load in proper order
+;[...coreModels, ...otherModels].forEach((file) => {
+    try {
+        const modelPath = path.join(__dirname, '../models', file);
+        const model = require(modelPath)(sequelize, Sequelize.DataTypes);
+        db[model.name] = model;
+        console.log(`Successfully loaded model: ${model.name}`);
+    } catch (error) {
+        console.error(`Error loading model ${file}:`, error);
+        throw error; // Fail fast if model loading fails
+    }
+});
 
 // تطبيق العلاقات إن وجدت
 Object.keys(db).forEach((modelName) => {
@@ -59,11 +68,8 @@ sequelize.authenticate()
     .then(async () => {
         console.log('Database connected successfully');
         try {
-            // Sync all models in proper order
-            await db.users.sync();
-            await db.blogs.sync();
-            await db.posts.sync();
-            await db.comments.sync();
+            // Sync all models - let Sequelize handle the order automatically
+            await db.sequelize.sync({ alter: true });
 
             console.log('Database tables synchronized successfully');
         } catch (error) {
