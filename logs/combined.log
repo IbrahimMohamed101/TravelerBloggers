@@ -1607,3 +1607,101 @@
 {"level":"debug","message":"createSession() called with params - userId: b90bbae5-ca04-4df7-8298-6cd7a852755f, token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI5MGJiYWU1LWNhMDQtNGRmNy04Mjk4LTZjZDdhODUyNzU1ZiIsImlhdCI6MTc0NDI4MjU3MCwiZXhwIjoxNzQ0Mjg2MTcwfQ.MJ5THc28ijofz_Cx5dN4mRnGLVQ2pXXP4hb3KvJ2S6Q, ipAddress: 172.18.0.1, userAgent: PostmanRuntime/7.43.3","timestamp":"2025-04-10T10:56:10.577Z"}
 {"level":"debug","message":"Normalized IP address: 172.18.0.1","timestamp":"2025-04-10T10:56:10.577Z"}
 {"level":"debug","message":"Creating session with normalized IP: 172.18.0.1","timestamp":"2025-04-10T10:56:10.577Z"}
+{"level":"info","message":"Refresh token verified for user b90bbae5-ca04-4df7-8298-6cd7a852755f, checking database...","timestamp":"2025-04-10T11:15:13.518Z"}
+{"level":"info","message":"Refresh token valid for user b90bbae5-ca04-4df7-8298-6cd7a852755f","timestamp":"2025-04-10T11:15:13.682Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:00:51.367Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:00:52.321Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:00:52.515Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-10T12:00:52.599Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-10T12:00:52.604Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:20:55.343Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:20:56.666Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:20:56.923Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-10T12:20:57.028Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-10T12:20:57.034Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:22:42.243Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:22:43.117Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:22:43.283Z"}
+{"level":"error","message":"Server startup failed: Cannot read properties of null (reading '1')","timestamp":"2025-04-10T12:22:43.302Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:27:03.606Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:27:04.757Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:27:04.893Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:27:05.016Z"}
+{"level":"error","message":"Container initialization error: Cannot read properties of null (reading '1')","stack":"TypeError: Cannot read properties of null (reading '1')\n    at Query.run (/app/node_modules/sequelize/lib/dialects/postgres/query.js:97:86)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /app/node_modules/sequelize/lib/sequelize.js:315:16\n    at async PostgresQueryInterface.showIndex (/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:254:12)\n    at async sessions.sync (/app/node_modules/sequelize/lib/model.js:988:29)\n    at async Sequelize.sync (/app/node_modules/sequelize/lib/sequelize.js:377:9)\n    at async Container.initialize (/app/config/container.js:18:13)\n    at async startServer (/app/index.js:177:13)","timestamp":"2025-04-10T12:27:05.059Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:27:17.394Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:27:17.928Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:27:17.985Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:27:18.100Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:29:05.041Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:29:06.062Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:29:06.165Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:29:06.283Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:30:29.130Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:30:30.291Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:30:30.427Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:30:30.571Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:30:39.265Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:30:40.090Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:30:40.167Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:30:40.286Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-10T12:30:40.304Z"}
+{"level":"info","message":"Container initialized successfully","timestamp":"2025-04-10T12:30:40.305Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-10T12:30:40.314Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:32:44.728Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:32:46.750Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:32:47.147Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:32:47.376Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-10T12:32:47.394Z"}
+{"level":"info","message":"Container initialized successfully","timestamp":"2025-04-10T12:32:47.395Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-10T12:32:47.401Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:34:11.920Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:34:12.872Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:34:12.948Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:34:13.061Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-10T12:34:13.078Z"}
+{"level":"info","message":"Container initialized successfully","timestamp":"2025-04-10T12:34:13.078Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-10T12:34:13.084Z"}
+{"level":"info","message":"Refresh token verified for user b90bbae5-ca04-4df7-8298-6cd7a852755f, checking database...","timestamp":"2025-04-10T12:39:07.215Z"}
+{"level":"warn","message":"Refresh token was revoked: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI5MGJiYWU1LWNhMDQtNGRmNy04Mjk4LTZjZDdhODUyNzU1ZiIsImlhdCI6MTc0NDI4MjU3MCwiZXhwIjoxNzQ2ODc0NTcwfQ.oPeDWX7XTJFZFUcoxbBjRaD8Kd1OyhuAznqw5k9BJWY","timestamp":"2025-04-10T12:39:07.563Z"}
+{"error":"Error: Refresh token was revoked\n    at AuthService.verifyRefreshToken (/app/services/authService.js:436:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthController.refreshToken (/app/controllers/authController.js:299:28)","level":"error","message":"Refresh token verification failed: Refresh token was revoked","timestamp":"2025-04-10T12:39:07.573Z","token":"eyJhbGciOi..."}
+{"level":"error","message":"Error refreshing token: Refresh token was revoked","timestamp":"2025-04-10T12:39:07.574Z"}
+{"level":"info","message":"Extracted and normalized IP address: 172.18.0.1 from headers: {\"content-type\":\"application/json\",\"user-agent\":\"PostmanRuntime/7.43.3\",\"accept\":\"*/*\",\"postman-token\":\"092b4136-b90e-44b4-98d7-f5a38cb2dcd6\",\"host\":\"localhost:3000\",\"accept-encoding\":\"gzip, deflate, br\",\"connection\":\"keep-alive\",\"content-length\":\"69\",\"cookie\":\"connect.sid=s%3Ax9fpTlq0YlJTU6EJ1yyWcAWckU9CKvS1.wVrYlL2x2pjg7w4naoLTtxOCy3o88lFPv07je71g6m8\"}","timestamp":"2025-04-10T12:39:13.956Z"}
+{"email":"hem...@...","ip":"172.18.0.1","level":"info","message":"Login attempt","timestamp":"2025-04-10T12:39:13.957Z"}
+{"level":"debug","message":"createSession() called with params - userId: b90bbae5-ca04-4df7-8298-6cd7a852755f, token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI5MGJiYWU1LWNhMDQtNGRmNy04Mjk4LTZjZDdhODUyNzU1ZiIsImlhdCI6MTc0NDI4ODc1NCwiZXhwIjoxNzQ0MjkyMzU0fQ.WfMj-zkJzy3mkH0I7CjIewIcp2PTAd0d3WYDFpHeUYk, ipAddress: 172.18.0.1, userAgent: PostmanRuntime/7.43.3","timestamp":"2025-04-10T12:39:14.162Z"}
+{"level":"debug","message":"Normalized IP address: 172.18.0.1","timestamp":"2025-04-10T12:39:14.163Z"}
+{"level":"debug","message":"Creating session with normalized IP: 172.18.0.1","timestamp":"2025-04-10T12:39:14.163Z"}
+{"level":"info","message":"Refresh token verified for user b90bbae5-ca04-4df7-8298-6cd7a852755f, checking database...","timestamp":"2025-04-10T12:39:34.170Z"}
+{"level":"info","message":"Refresh token valid for user b90bbae5-ca04-4df7-8298-6cd7a852755f","timestamp":"2025-04-10T12:39:34.183Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:49:41.050Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:49:42.784Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:49:42.988Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:49:43.260Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-10T12:49:43.280Z"}
+{"level":"info","message":"Container initialized successfully","timestamp":"2025-04-10T12:49:43.281Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-10T12:49:43.293Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-10T12:55:59.394Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-10T12:56:02.100Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-10T12:56:02.361Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-10T12:56:02.689Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-10T12:56:02.722Z"}
+{"level":"info","message":"Container initialized successfully","timestamp":"2025-04-10T12:56:02.723Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-10T12:56:02.738Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-11T14:39:33.926Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-11T14:39:35.567Z"}
+{"level":"error","message":"Server startup failed: getaddrinfo EAI_AGAIN db","timestamp":"2025-04-11T14:39:43.584Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-11T14:41:13.901Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-11T14:41:15.040Z"}
+{"level":"error","message":"Server startup failed: getaddrinfo EAI_AGAIN db","timestamp":"2025-04-11T14:41:23.052Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-11T14:44:38.539Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-11T14:44:39.031Z"}
+{"level":"error","message":"Server startup failed: getaddrinfo EAI_AGAIN db","timestamp":"2025-04-11T14:44:47.041Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-11T14:45:00.035Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-11T14:45:00.512Z"}
+{"level":"error","message":"Server startup failed: getaddrinfo EAI_AGAIN db","timestamp":"2025-04-11T14:45:08.525Z"}
+{"level":"debug","message":"Logger initialized","timestamp":"2025-04-11T14:49:35.582Z"}
+{"level":"info","message":"HTTP mode enabled","timestamp":"2025-04-11T14:49:36.297Z"}
+{"level":"info","message":"Database connection established","timestamp":"2025-04-11T14:49:36.367Z"}
+{"level":"info","message":"Database synced successfully","timestamp":"2025-04-11T14:49:36.481Z"}
+{"level":"info","message":"AuthService initialized without Redis","timestamp":"2025-04-11T14:49:36.493Z"}
+{"level":"info","message":"Container initialized successfully","timestamp":"2025-04-11T14:49:36.494Z"}
+{"level":"info","message":"HTTP Server running on port 3000","timestamp":"2025-04-11T14:49:36.499Z"}

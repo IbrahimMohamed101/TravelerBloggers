@@ -13,18 +13,28 @@ class Container {
         if (this.isInitialized) return;
 
         try {
-            // Wait for database connection and sync
-            await db.sequelize.authenticate();
-            await db.sequelize.sync({ force: false });
+            // Verify database connection
+            try {
+                await db.sequelize.authenticate();
+                console.log('Database connection verified in container');
+            } catch (dbError) {
+                throw new Error(`Database connection failed: ${dbError.message}`);
+            }
 
             // Verify models are loaded
             if (!db.AuditLog || !db.Users) {
                 throw new Error('Database models not properly initialized');
             }
 
-            // Initialize audit log service first
-            const auditLogService = require('../services/auditLogService');
-            await auditLogService.ready;
+            // Initialize audit log service with error handling
+            let auditLogService;
+            try {
+                auditLogService = require('../services/auditLogService');
+                await auditLogService.ready;
+                console.log('Audit log service initialized');
+            } catch (auditError) {
+                throw new Error(`Audit log service initialization failed: ${auditError.message}`);
+            }
 
             // Initialize services with db dependency
             this.services.authService = new AuthService(db, auditLogService);
