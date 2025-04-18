@@ -75,7 +75,18 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Swagger with error handling
+// تهيئة المسارات
+const router = express.Router();
+
+// Health check endpoint
+router.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// تحميل المسارات
+app.use('/api', router);
+
+// تهيئة Swagger
 try {
     const swaggerPath = path.join(__dirname, 'swagger.yaml');
     console.log(`Loading Swagger from: ${swaggerPath}`);
@@ -102,97 +113,85 @@ try {
     });
 }
 
-// Health check endpoint
-app.get('/status', async (req, res) => {
-    try {
-        await db.sequelize.authenticate();
-        res.json({
-            status: 'running',
-            database: 'connected',
-            timestamp: new Date().toISOString()
-        });
-    } catch (error) {
-        res.json({
-            status: 'running',
-            database: 'disconnected',
-            error: error.message,
-            timestamp: new Date().toISOString()
-        });
-    }
-});
+// إنشاء خادم HTTP/HTTPS
+const server = USE_HTTPS
+    ? https.createServer({
+        key: fs.readFileSync(process.env.SSL_KEY_PATH),
+        cert: fs.readFileSync(process.env.SSL_CERT_PATH)
+    }, app)
+    : http.createServer(app);
 
-// Routes (must be required after container initialization)
-const authRoutes = require('./routes/authRoutes');
-app.use('/api/v1/users', authRoutes);
-
-// Discord Auth
-app.get("/api/auth/discord", passport.authenticate("discord"));
-app.get("/api/auth/discord/redirect", passport.authenticate("discord"), (req, res) => {
-    res.sendStatus(200);
-});
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-    logger.error(`Unhandled error: ${err.stack}`);
-    res.status(500).json({ message: 'Something went wrong!' });
-});
-
-// تحديد نوع السيرفر (HTTP/HTTPS)
-let server;
-
-if (USE_HTTPS) {
-    const credentials = {
-        key: fs.readFileSync(process.env.SSL_KEY_PATH || 'key.pem', 'utf8'),
-        cert: fs.readFileSync(process.env.SSL_CERT_PATH || 'cert.pem', 'utf8')
-    };
-    server = https.createServer(credentials, app);
-    logger.info('HTTPS mode enabled');
-} else {
-    server = http.createServer(app);
-    logger.info('HTTP mode enabled');
-}
+logger.info(`${USE_HTTPS ? 'HTTPS' : 'HTTP'} mode enabled`);
 
 async function startServer() {
     try {
-        // Verify database connection first
+        // التحقق من اتصال قاعدة البيانات
         await db.sequelize.authenticate();
         logger.info('Database connection established');
 
-        // Ensure models are loaded
-        if (!db.Users || !db.AuditLog) {
-            throw new Error('Database models not properly loaded');
+        // التحقق من تحميل النماذج
+        const requiredModels = ['users', 'audit_logs', 'blogs', 'categories'];
+        const missingModels = requiredModels.filter(model => !db[model]);
+        
+        if (missingModels.length > 0) {
+            throw new Error(`Required models not loaded: ${missingModels.join(', ')}`);
         }
 
-        // Sync database with error handling
-        try {
-            await db.sequelize.sync({ force: false });
-            logger.info('Database synced successfully');
-        } catch (syncError) {
-            logger.error('Database sync error:', syncError);
-            throw syncError;
-        }
+        // تهيئة الحاوية
+        await container.initialize();
+        logger.info('Container initialized successfully');
 
-        // Initialize container with additional checks
-        try {
-            await container.initialize();
-            logger.info('Container initialized successfully');
-        } catch (containerError) {
-            logger.error('Container initialization error:', containerError);
-            throw containerError;
-        }
-
-        // Initialize audit log service
+        // تهيئة خدمة سجل التدقيق
         const auditLogService = require('./services/auditLogService');
         await auditLogService.init();
 
-        // Start server
+        // تحميل مسارات المصادقة
+        try {
+            const authRoutes = require('./routes/auth')(db);
+            app.use('/api/auth', authRoutes);
+            logger.info('Auth routes loaded successfully');
+        } catch (error) {
+            logger.warn('Auth routes not loaded:', error.message);
+        }
+
+        // تحميل مسارات المستخدمين
+        try {
+            const userRoutes = require('./routes/users')(db);
+            app.use('/api/users', userRoutes);
+            logger.info('User routes loaded successfully');
+        } catch (error) {
+            logger.warn('User routes not loaded:', error.message);
+        }
+
+        // تشغيل الخادم
         server.listen(PORT, () => {
-            logger.info(`${USE_HTTPS ? 'HTTPS' : 'HTTP'} Server running on port ${PORT}`);
+            logger.info(`Server running on port ${PORT}`);
+            logger.info(`API documentation available at http${USE_HTTPS ? 's' : ''}://localhost:${PORT}/api-docs`);
         });
     } catch (err) {
         logger.error(`Server startup failed: ${err.message}`);
+        if (err.stack) {
+            logger.error(`Stack trace: ${err.stack}`);
+        }
         process.exit(1);
     }
 }
+
+// معالجة إنهاء التطبيق بشكل آمن
+process.on('SIGTERM', () => {
+    logger.info('SIGTERM signal received');
+    server.close(() => {
+        logger.info('Server closed');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    logger.info('SIGINT signal received');
+    server.close(() => {
+        logger.info('Server closed');
+        process.exit(0);
+    });
+});
 
 startServer();

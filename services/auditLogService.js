@@ -3,16 +3,17 @@ const logger = require('../utils/logger');
 class AuditLogService {
     constructor() {
         this.initialized = false;
-        this.AuditLog = null;
+        this.auditLogs = null;
     }
 
     async init() {
         const db = require('../config/database');
-        if (!db.AuditLog) {
-            throw new Error('AuditLog model not found in database configuration');
+        if (!db.audit_logs) {
+            throw new Error('audit_logs model not found in database configuration');
         }
-        this.AuditLog = db.AuditLog;
+        this.auditLogs = db.audit_logs;
         this.initialized = true;
+        logger.info('AuditLogService initialized successfully');
     }
 
     async ensureInitialized() {
@@ -24,13 +25,14 @@ class AuditLogService {
     async logEvent(userId, action, details = {}) {
         try {
             await this.ensureInitialized();
-            const log = await this.AuditLog.create({
+            const log = await this.auditLogs.create({
                 user_id: userId,
                 action,
                 details: JSON.stringify(details),
                 ip_address: details.ipAddress,
                 user_agent: details.userAgent
             });
+            logger.debug(`Audit log created: ${action} by user ${userId}`);
             return log;
         } catch (error) {
             logger.error(`Error logging audit event: ${error.message}`);
@@ -41,7 +43,7 @@ class AuditLogService {
     async getLogsForUser(userId, limit = 100) {
         try {
             await this.ensureInitialized();
-            return await this.AuditLog.findAll({
+            return await this.auditLogs.findAll({
                 where: { user_id: userId },
                 order: [['created_at', 'DESC']],
                 limit

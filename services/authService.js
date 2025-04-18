@@ -83,13 +83,17 @@ class AuthService {
     async initialize() {
         try {
             // Ensure models are loaded
-            if (!this.db || !this.db.Users) {
-                logger.error('Users model not found in database configuration');
-                throw new Error('Database configuration error');
+            const requiredModels = ['users', 'sessions'];
+            const missingModels = requiredModels.filter(model => !this.db[model]);
+            
+            if (missingModels.length > 0) {
+                const error = `Required models not loaded: ${missingModels.join(', ')}`;
+                logger.error(error);
+                throw new Error(error);
             }
 
-            this.User = this.db.Users;
-            this.Session = this.db.sessions;
+            this.users = this.db.users;
+            this.sessions = this.db.sessions;
             this.initialized = true;
 
             // Connect to Redis if enabled
@@ -99,6 +103,8 @@ class AuthService {
             } else {
                 logger.info('AuthService initialized without Redis');
             }
+
+            return this;
         } catch (error) {
             logger.error('AuthService initialization failed:', error);
             throw error;
@@ -167,7 +173,7 @@ class AuthService {
             logger.debug(`Creating session with normalized IP: ${validatedIp}`);
 
             const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
-            const session = await this.Session.create({
+            const session = await this.sessions.create({
                 user_id: userId,
                 token,
                 ip_address: validatedIp,
@@ -184,13 +190,13 @@ class AuthService {
 
     async validateSession(token) {
         try {
-            const session = await this.Session.findOne({
+            const session = await this.sessions.findOne({
                 where: {
                     token,
                     is_revoked: false,
                     expires_at: { [this.db.Sequelize.Op.gt]: new Date() }
                 },
-                include: [{ model: this.User }]
+                include: [{ model: this.users }]
             });
 
             if (!session) {
@@ -206,7 +212,7 @@ class AuthService {
 
     async revokeSession(token) {
         try {
-            const session = await this.Session.findOne({ where: { token } });
+            const session = await this.sessions.findOne({ where: { token } });
             if (!session) {
                 throw new Error('Session not found');
             }
@@ -222,7 +228,7 @@ class AuthService {
 
     async getActiveSessions(userId) {
         try {
-            return await this.Session.findAll({
+            return await this.sessions.findAll({
                 where: {
                     user_id: userId,
                     is_revoked: false,
@@ -260,7 +266,7 @@ class AuthService {
     // Add method for password reset using Redis
     async generatePasswordResetToken(email) {
         try {
-            const user = await this.User.findOne({ where: { email } });
+            const user = await this.users.findOne({ where: { email } });
             if (!user) {
                 throw new Error('User not found');
             }
@@ -287,7 +293,7 @@ class AuthService {
                 throw new Error('Invalid or expired token');
             }
 
-            const user = await this.User.findOne({ where: { email: resetData.email } });
+            const user = await this.users.findOne({ where: { email: resetData.email } });
             if (!user) {
                 throw new Error('User not found');
             }
@@ -305,7 +311,7 @@ class AuthService {
 
     async changePasswordDirectly(userId, currentPassword, newPassword, ipAddress, userAgent) {
         try {
-            const user = await this.User.findByPk(userId);
+            const user = await this.users.findByPk(userId);
             if (!user) {
                 throw new Error('User not found');
             }
@@ -333,7 +339,7 @@ class AuthService {
     // Add method for email verification
     async generateEmailVerificationToken(email) {
         try {
-            const user = await this.User.findOne({ where: { email } });
+            const user = await this.users.findOne({ where: { email } });
             if (!user) {
                 throw new Error('User not found');
             }
@@ -359,7 +365,7 @@ class AuthService {
                 throw new Error('Invalid token');
             }
 
-            const user = await this.User.findOne({ where: { email: verificationData.email } });
+            const user = await this.users.findOne({ where: { email: verificationData.email } });
             if (!user) {
                 throw new Error('User not found');
             }
@@ -390,7 +396,7 @@ class AuthService {
         );
 
         // Store in database
-        await this.Session.create({
+        await this.sessions.create({
             user_id: userId,
             token,
             is_refresh: true,
@@ -413,7 +419,7 @@ class AuthService {
             logger.info(`Refresh token verified for user ${decoded.id}, checking database...`);
 
             // Check if token exists in database
-            const session = await this.Session.findOne({
+            const session = await this.sessions.findOne({
                 where: {
                     token,
                     is_refresh: true,
@@ -424,10 +430,10 @@ class AuthService {
 
             if (!session) {
                 // Check why it wasn't found
-                const revoked = await this.Session.findOne({
+                const revoked = await this.sessions.findOne({
                     where: { token, is_refresh: true, is_revoked: true }
                 });
-                const expired = await this.Session.findOne({
+                const expired = await this.sessions.findOne({
                     expires_at: { [this.db.Sequelize.Op.lt]: new Date() }
                 });
 
@@ -464,7 +470,7 @@ class AuthService {
     // Add method to revoke refresh token
     async revokeRefreshToken(token) {
         try {
-            const result = await this.Session.update(
+            const result = await this.sessions.update(
                 { is_revoked: true },
                 { where: { token, is_refresh: true } }
             );
@@ -498,13 +504,13 @@ class AuthService {
         logger.info(`Attempting to register user with email: ${email}`);
 
         try {
-            const existingUser = await this.User.findOne({ where: { email } });
+            const existingUser = await this.users.findOne({ where: { email } });
             if (existingUser) {
                 logger.warn(`Registration failed: Email ${email} already exists`);
                 throw new Error('Email already exists');
             }
 
-            const existingUsername = await this.User.findOne({ where: { username } });
+            const existingUsername = await this.users.findOne({ where: { username } });
             if (existingUsername) {
                 logger.warn(`Registration failed: Username ${username} already taken`);
                 throw new Error('Username already taken');
@@ -539,7 +545,7 @@ class AuthService {
             userData.social_media = social_media || {};
             userData.interested_categories = interested_categories || [];
 
-            const newUser = await this.User.create(userData);
+            const newUser = await this.users.create(userData);
             const token = generateToken(newUser);
 
             // تأجيل تسجيل الحدث حتى يكتمل إنشاء المستخدم
@@ -591,7 +597,7 @@ class AuthService {
             });
 
             // Fetch only required user fields
-            const user = await this.User.findOne({
+            const user = await this.users.findOne({
                 where: { email },
                 attributes: ['id', 'password']
             });
@@ -611,7 +617,7 @@ class AuthService {
             if (providerTokens.discord) await this.verifyDiscordToken(providerTokens.discord, {});
 
             // Update last login
-            await this.User.update(
+            await this.users.update(
                 { last_login_at: new Date() },
                 { where: { id: user.id } }
             );
@@ -669,7 +675,7 @@ class AuthService {
 
     async getUserById(userId) {
         try {
-            const user = await this.User.findByPk(userId, {
+            const user = await this.users.findByPk(userId, {
                 attributes: ['id', 'first_name', 'last_name', 'username', 'email', 'role', 'bio', 'gender', 'social_media', 'interested_categories', 'profile_image']
             });
 

@@ -1,6 +1,7 @@
 const AuthService = require('../services/authService');
 const AuthController = require('../controllers/authController');
 const db = require('./database');
+const logger = require('../utils/logger');
 
 class Container {
     constructor() {
@@ -16,35 +17,43 @@ class Container {
             // Verify database connection
             try {
                 await db.sequelize.authenticate();
-                console.log('Database connection verified in container');
+                logger.info('Database connection verified in container');
             } catch (dbError) {
                 throw new Error(`Database connection failed: ${dbError.message}`);
             }
 
-            // Verify models are loaded
-            if (!db.AuditLog || !db.Users) {
-                throw new Error('Database models not properly initialized');
+            // Verify required models are loaded
+            const requiredModels = ['users', 'audit_logs', 'blogs', 'categories'];
+            const missingModels = requiredModels.filter(model => !db[model]);
+            
+            if (missingModels.length > 0) {
+                throw new Error(`Required models not loaded: ${missingModels.join(', ')}`);
             }
+
+            logger.info('All required models verified');
 
             // Initialize audit log service with error handling
             let auditLogService;
             try {
                 auditLogService = require('../services/auditLogService');
                 await auditLogService.ready;
-                console.log('Audit log service initialized');
+                logger.info('Audit log service initialized');
             } catch (auditError) {
                 throw new Error(`Audit log service initialization failed: ${auditError.message}`);
             }
 
             // Initialize services with db dependency
             this.services.authService = new AuthService(db, auditLogService);
+            logger.info('Auth service initialized');
 
             // Initialize controllers
             this.controllers.authController = new AuthController(this.services.authService);
+            logger.info('Auth controller initialized');
 
             this.isInitialized = true;
+            logger.info('Container initialization completed successfully');
         } catch (error) {
-            console.error('Container initialization failed:', error);
+            logger.error('Container initialization failed:', error);
             throw error;
         }
     }
@@ -53,14 +62,22 @@ class Container {
         if (!this.isInitialized) {
             throw new Error('Container not initialized. Call initialize() first.');
         }
-        return this.services[name];
+        const service = this.services[name];
+        if (!service) {
+            throw new Error(`Service '${name}' not found in container`);
+        }
+        return service;
     }
 
     getController(name) {
         if (!this.isInitialized) {
             throw new Error('Container not initialized. Call initialize() first.');
         }
-        return this.controllers[name];
+        const controller = this.controllers[name];
+        if (!controller) {
+            throw new Error(`Controller '${name}' not found in container`);
+        }
+        return controller;
     }
 }
 

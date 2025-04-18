@@ -28,6 +28,10 @@ const sequelize = new Sequelize(
             acquire: 60000, // Increased from 30000
             idle: 10000,
         },
+        define: {
+            timestamps: true,
+            underscored: true
+        }
     }
 );
 
@@ -37,41 +41,89 @@ db.sequelize = sequelize;
 
 // Load models synchronously and verify
 const modelFiles = fs.readdirSync(path.join(__dirname, '../models'))
-    .filter((file) => file.endsWith('.js'));
+    .filter((file) => file.endsWith('.js') && file !== 'init-models.js');
 
-// Load core models first
-const coreModels = ['users.js', 'sessions.js', 'auditLog.js']; // Add other core models as needed
-const otherModels = modelFiles.filter(file => !coreModels.includes(file));
+// Define the order of model loading
+const modelOrder = [
+    // Core models
+    'users.js',
+    'sessions.js',
+    'permissions.js',
+    'admin_logs.js',
+    'audit_logs.js',
+    
+    // Content models
+    'categories.js',
+    'blogs.js',
+    'blog_reactions.js',
+    'posts.js',
+    'post_reactions.js',
+    'comments.js',
+    'comment_reactions.js',
+    'reactions.js',
+    
+    // Travel related models
+    'travel_plans.js',
+    'travel_plan_locations.js',
+    'travel_plan_shares.js',
+    
+    // User related models
+    'followers.js',
+    'guest_users.js',
+    'notifications.js',
+    'trophies.js',
+    'user_trophies.js',
+    
+    // Other models
+    'events.js',
+    'contact_messages.js'
+];
 
-// Load in proper order
-;[...coreModels, ...otherModels].forEach((file) => {
+// Sort model files based on the defined order
+const sortedModelFiles = [
+    ...modelOrder.filter(file => modelFiles.includes(file)),
+    ...modelFiles.filter(file => !modelOrder.includes(file))
+];
+
+// Load models in the correct order
+sortedModelFiles.forEach((file) => {
     try {
         const modelPath = path.join(__dirname, '../models', file);
         const model = require(modelPath)(sequelize, Sequelize.DataTypes);
+        if (!model.name) {
+            console.error(`Model in file ${file} has no name property`);
+            throw new Error(`Model in file ${file} has no name property`);
+        }
         db[model.name] = model;
-        console.log(`Successfully loaded model: ${model.name}`);
+        console.log(`Successfully loaded model: ${model.name} from ${file}`);
     } catch (error) {
         console.error(`Error loading model ${file}:`, error);
-        throw error; // Fail fast if model loading fails
+        throw error;
     }
 });
 
-// تطبيق العلاقات إن وجدت
+// Apply associations after all models are loaded
 Object.keys(db).forEach((modelName) => {
     if (db[modelName].associate) {
-        db[modelName].associate(db);
+        try {
+            db[modelName].associate(db);
+            console.log(`Successfully associated model: ${modelName}`);
+        } catch (error) {
+            console.error(`Error associating model ${modelName}:`, error);
+            console.error('Available models:', Object.keys(db).join(', '));
+            throw error;
+        }
     }
 });
 
-// اختبار الاتصال وتهيئة الجدول
+// Test connection and initialize tables
 sequelize.authenticate()
     .then(async () => {
         console.log('Database connected successfully');
         try {
             // Sync all models - let Sequelize handle the order automatically
-            await db.sequelize.sync({ alter: true });
-
-            console.log('Database tables synchronized successfully');
+            // await db.sequelize.sync({ alter: true });
+            console.log('Database sync skipped (migrations should be used)');
         } catch (error) {
             console.error('Database sync failed:', error);
             throw error;
@@ -79,7 +131,7 @@ sequelize.authenticate()
     })
     .catch((err) => {
         console.error('Database connection error:', err);
-        process.exit(1); // Exit with error code
+        process.exit(1);
     });
 
 module.exports = db;
