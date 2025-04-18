@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Traveler Bloggers Platform
 
 ## Overview
@@ -426,3 +427,6 @@ Make sure you have the following installed on your machine:
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+=======
+# TravelerBloggers
+>>>>>>> 2cbe78f (Initial commit)
