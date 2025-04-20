@@ -1,4 +1,7 @@
 const logger = require('../utils/logger');
+const sequelize = require('../config/sequelize');
+const initModels = require('../models/init-models');
+const db = initModels(sequelize);
 
 class AuditLogService {
     constructor() {
@@ -7,7 +10,6 @@ class AuditLogService {
     }
 
     async init() {
-        const db = require('../config/database');
         if (!db.audit_logs) {
             throw new Error('audit_logs model not found in database configuration');
         }
