@@ -31,14 +31,15 @@ const loginSchema = Joi.object({
 }).xor('password', 'google_token', 'facebook_token'); // لازم واحد منهم فقط
 
 // دالة التحقق العام
-const validate = (schema) => (req, res, next) => {
-    const { error } = schema.validate(req.body);
+const validate = (schema, property = 'body') => (req, res, next) => {
+    const { error } = schema.validate(req[property]);
     if (error) return res.status(400).json({ message: error.details[0].message });
     next();
 };
 
 // تصدير الدوال
 module.exports = {
+    validate,
     validateRegister: validate(registerSchema),
     validateLogin: validate(loginSchema),
 };

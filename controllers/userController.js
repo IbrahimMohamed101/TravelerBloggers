@@ -61,6 +61,20 @@ class UserController {
             res.status(500).json({ message: 'Error updating profile' });
         }
     }
+    async getUserById(req, res) {
+        try {
+            const userId = req.params.id;
+            const user = await this.userService.getUserById(userId);
+
+            res.status(200).json({
+                message: 'User retrieved successfully',
+                user,
+            });
+        } catch (error) {
+            logger.error(`Error getting user by ID: ${error.message}`);
+            res.status(500).json({ message: 'Error retrieving user' });
+        }
+    }
 }
 
 module.exports = UserController;

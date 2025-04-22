@@ -6,14 +6,14 @@ help: ## Show this help
 start: ## Start the application
 	npm start
 
-dev: ## Start the application in development mode (requires docker-up first)
-	@echo "Ensure database is running (run 'make docker-up' first)"
+dev: ## Start the application in development mode
+	@echo "Ensure your local database is running on localhost:5432"
 	npm run dev
 
-dev-with-db: ## Start both database and application in development mode
-	docker-compose up -d db
-	sleep 5  # Wait for db to initialize
-	npm run dev
+# dev-with-db: ## Start both database and application in development mode
+#	docker-compose up -d db
+#	sleep 5  # Wait for db to initialize
+#	npm run dev
 
 test: ## Run tests
 	npm test
@@ -27,19 +27,46 @@ lint: ## Run linter
 format: ## Format code
 	npm run format
 
-docker-build: ## Build Docker image
-	docker-compose build
+# docker-pull: ## Pull Docker images
+#	docker pull bitnami/postgresql:latest
+#	docker pull bitnami/prometheus:latest
+#	docker pull bitnami/grafana:latest
+#	docker pull bitnami/node-exporter:latest
 
-docker-up: ## Start Docker containers (including database)
-	docker-compose up -d db
-	sleep 5  # Wait for db to initialize
-	docker-compose up -d --no-recreate
+# docker-build: docker-pull ## Build Docker image
+#	docker-compose build
 
-docker-down: ## Stop Docker containers
-	docker-compose down
+# docker-up-db: ## Start database container
+#	@echo "Starting database..."
+#	docker-compose up -d db
+#	@echo "Waiting for database to initialize..."
+#	sleep 15
 
-docker-clean: ## Remove Docker containers and images
-	docker-compose down -v --rmi all
+# docker-up-monitoring: ## Start monitoring services
+#	@echo "Starting monitoring services..."
+#	@echo "Starting Prometheus..."
+#	docker-compose up -d prometheus
+#	sleep 5
+#	@echo "Starting Node Exporter..."
+#	docker-compose up -d node-exporter
+#	sleep 5
+#	@echo "Starting Grafana..."
+#	docker-compose up -d grafana
+#	sleep 5
+
+# docker-up-backend: ## Start backend service
+#	@echo "Starting backend service..."
+#	docker-compose up -d backend
+
+# docker-up: docker-up-db docker-up-monitoring docker-up-backend ## Start all Docker containers
+
+# docker-down: ## Stop Docker containers
+#	docker-compose down
+
+# docker-clean: ## Remove Docker containers and images
+#	docker-compose down -v --rmi all
+#	docker system prune -f --volumes
+#	docker builder prune -f
 
 migrate: ## Run database migrations
 	npm run migrate
@@ -61,16 +88,16 @@ kill-port: ## Kill any process using port 3000
 	@echo "Killing process on port 3000 if exists..."
 	-@lsof -ti:3000 | xargs kill -9
 
-logs: ## Show Docker logs for backend
-	docker-compose logs -f backend
+# logs: ## Show Docker logs for backend
+#	docker-compose logs -f backend
 
-restart: ## Restart backend and database
-	make docker-down
-	make docker-up
+# restart: ## Restart backend and database
+#	make docker-down
+#	make docker-up
 
-reset-db: ## Rebuild the database from scratch
-	make docker-down
-	docker volume prune -f
-	make docker-up
-	make migrate
-	make seed
+# reset-db: ## Rebuild the database from scratch
+#	make docker-down
+#	docker volume prune -f
+#	make docker-up
+#	make migrate
+#	make seed

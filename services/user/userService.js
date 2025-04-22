@@ -29,7 +29,7 @@ class UserService {
 
             // Update user data
             await user.update(updateData);
-            
+
             // Return updated user without sensitive information
             const { password, ...userWithoutPassword } = user.toJSON();
             return userWithoutPassword;
@@ -150,6 +150,19 @@ class UserService {
             return true;
         } catch (error) {
             logger.error(`Error deleting account: ${error.message}`);
+            throw error;
+        }
+    }
+    async getUserById(userId) {
+        try {
+            const user = await this.User.findByPk(userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+            const { password, ...userWithoutPassword } = user.toJSON();
+            return userWithoutPassword;
+        } catch (error) {
+            logger.error(`Error getting user by ID: ${error.message}`);
             throw error;
         }
     }
