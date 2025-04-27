@@ -70,19 +70,6 @@ class AuthController {
     }
 
 
-    async refreshToken(req, res, next) {
-        try {
-            const { refreshToken } = req.body;
-            const result = await this.authService.refreshToken(refreshToken);
-            res.status(200).json(result);
-        } catch (error) {
-            logger.error(`Token refresh error: ${error.message}`);
-            if (error.message === 'Invalid or expired refresh token') {
-                return res.status(401).json({ message: error.message });
-            }
-            next(error);
-        }
-    }
 
     async verifyEmail(req, res, next) {
         try {
@@ -91,6 +78,20 @@ class AuthController {
             res.status(200).json(result);
         } catch (error) {
             logger.error(`Email verification error: ${error.message}`);
+            next(error);
+        }
+    }
+
+    async resendVerificationEmail(req, res, next) {
+        try {
+            const userId = req.query.userId;
+            if (!userId) {
+                return res.status(400).json({ message: 'userId query parameter is required' });
+            }
+            const result = await this.authService.resendVerificationEmail(userId);
+            res.status(200).json(result);
+        } catch (error) {
+            logger.error(`Resend verification email error: ${error.message}`);
             next(error);
         }
     }

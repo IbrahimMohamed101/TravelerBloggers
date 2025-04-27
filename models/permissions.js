@@ -1,10 +1,11 @@
 const Sequelize = require('sequelize');
+
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('permissions', {
+    const Permission = sequelize.define('permissions', {
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
-            defaultValue: Sequelize.UUIDV4
+            defaultValue: DataTypes.UUIDV4
         },
         name: {
             type: DataTypes.STRING(50),
@@ -18,6 +19,27 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         sequelize,
         tableName: 'permissions',
-        timestamps: true
+        schema: 'public',
+        timestamps: true,
+        underscored: false,
+        indexes: [
+            {
+                name: 'permissions_name_key',
+                unique: true,
+                fields: [{ name: 'name' }]
+            }
+        ]
     });
+
+    Permission.associate = function (models) {
+        // Users (many-to-many through user_permissions)
+        Permission.belongsToMany(models.users, {
+            through: 'user_permissions',
+            foreignKey: 'permission_id',
+            otherKey: 'user_id',
+            as: 'users'
+        });
+    };
+
+    return Permission;
 };

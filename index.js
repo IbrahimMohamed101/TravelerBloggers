@@ -13,7 +13,9 @@ const https = require('https');
 const client = require('prom-client');
 
 const logger = require('./utils/logger');
-const container = require('./config/container');
+const container = require('./container/index');
+const models = require('./models');
+const sequelize = require('./config/sequelize');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -82,9 +84,11 @@ async function initializeRoutes() {
     await container.initialize();
     logger.info('Container initialized successfully');
 
-    const authRoutes = require('./routes/authRoutes')(container);
-    const userRoutes = require('./routes/userRoutes')(container);
-    const sessionRoutes = require('./routes/sessionRoutes')(container);
+    const authRoutes = require('./routes/auth')(container);
+    const userRoutes = require('./routes/user/userRoutes')(container);
+    const sessionRoutes = require('./routes/auth/sessionRoutes')(container);
+    const tokenRoutes = require('./routes/auth/tokenRoutes')(container);
+    const passwordRoutes = require('./routes/auth/passwordRoutes')(container);
 
     const router = express.Router();
 
@@ -95,6 +99,8 @@ async function initializeRoutes() {
     router.use('/auth', authRoutes);
     router.use('/users', userRoutes);
     router.use('/sessions', sessionRoutes);
+    router.use('/auth', tokenRoutes);
+    router.use('/auth', passwordRoutes);
 
     app.use('/api/v1', router);
 }
@@ -102,8 +108,17 @@ async function initializeRoutes() {
 // 🟡 Start server
 let server;
 
+const initServicesModule = require('./container/initServices');
+const { initServices, initializePermissionServices } = initServicesModule;
+
 async function startServer() {
     try {
+        // Initialize other services if needed
+        const services = await initServices(models, sequelize);
+
+        // Initialize permissions and roles
+        await initializePermissionServices();
+
         await initializeRoutes();
         initializeSwagger();
         app.use(errorHandler);

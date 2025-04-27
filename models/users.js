@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const User = sequelize.define('users', {
     id: {
       type: DataTypes.UUID,
@@ -26,10 +26,13 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       unique: "users_email_key"
     },
-    role: {
-      type: DataTypes.ENUM("super_admin", "admin", "content_manager", "user"),
+    role_id: {
+      type: DataTypes.UUID,
       allowNull: false,
-      defaultValue: "user"
+      references: {
+        model: 'roles',
+        key: 'id'
+      }
     },
     is_active: {
       type: DataTypes.BOOLEAN,
@@ -60,7 +63,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     password: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: true // Nullable for OAuth users
     },
     email_verified: {
       type: DataTypes.BOOLEAN,
@@ -74,6 +77,37 @@ module.exports = function(sequelize, DataTypes) {
     last_login_at: {
       type: DataTypes.DATE,
       allowNull: true
+    },
+    oauth_provider: {
+      type: DataTypes.ENUM("google", "facebook", "discord"),
+      allowNull: true
+    },
+    oauth_id: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    two_factor_secret: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    is_two_factor_enabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    failed_login_attempts: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    lock_until: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    language: {
+      type: DataTypes.ENUM("en", "ar"),
+      allowNull: false,
+      defaultValue: "en"
     }
   }, {
     sequelize,
@@ -96,11 +130,19 @@ module.exports = function(sequelize, DataTypes) {
         name: "users_pkey",
         unique: true,
         fields: [{ name: "id" }]
+      },
+      {
+        name: "users_oauth_idx",
+        fields: [{ name: "oauth_provider" }, { name: "oauth_id" }]
+      },
+      {
+        name: "users_role_idx",
+        fields: [{ name: "role" }]
       }
     ]
   });
 
-  User.associate = function(models) {
+  User.associate = function (models) {
     // Audit logs
     User.hasMany(models.audit_logs, {
       foreignKey: 'user_id',
@@ -179,6 +221,20 @@ module.exports = function(sequelize, DataTypes) {
     User.hasMany(models.sessions, {
       foreignKey: 'user_id',
       as: 'sessions'
+    });
+
+    // Remove or comment out the hasMany association with permissions to avoid alias conflict
+    // User.hasMany(models.permissions, {
+    //   foreignKey: 'user_id',
+    //   as: 'permissions'
+    // });
+
+    // Permissions (many-to-many through user_permissions)
+    User.belongsToMany(models.permissions, {
+      through: 'user_permissions',
+      foreignKey: 'user_id',
+      otherKey: 'permission_id',
+      as: 'permissions'
     });
   };
 

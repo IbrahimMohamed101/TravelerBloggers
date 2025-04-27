@@ -24,6 +24,13 @@ var _travel_plans = require("./travel_plans");
 var _trophies = require("./trophies");
 var _user_trophies = require("./user_trophies");
 var _users = require("./users");
+var _user_permissions = require("./user_permissions");
+var _refresh_tokens = require("./refresh_tokens");
+var _email_verification_tokens = require("./email_verification_tokens");
+var _password_reset_tokens = require("./password_reset_tokens");
+var _role_permissions = require("./role_permissions");
+var _refresh_tokens = require("./refresh_tokens");
+
 
 function initModels(sequelize) {
   var admin_logs = _admin_logs(sequelize, DataTypes);
@@ -49,7 +56,14 @@ function initModels(sequelize) {
   var travel_plans = _travel_plans(sequelize, DataTypes);
   var trophies = _trophies(sequelize, DataTypes);
   var user_trophies = _user_trophies(sequelize, DataTypes);
+  var user_permissions = _user_permissions(sequelize, DataTypes);
+  var refresh_tokens = _refresh_tokens(sequelize, DataTypes);
+  var email_verification_tokens = _email_verification_tokens(sequelize, DataTypes);
+  var password_reset_tokens = _password_reset_tokens(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
+  var role_permissions = _role_permissions(sequelize, DataTypes);
+  var refresh_tokens = _refresh_tokens(sequelize, DataTypes);
+
 
   // Relationships
   // Blogs & Comments
@@ -122,7 +136,24 @@ function initModels(sequelize) {
 
   // Permissions (if linked to users)
   permissions.belongsTo(users, { as: "user", foreignKey: "user_id" });
-  users.hasMany(permissions, { as: "permissions", foreignKey: "user_id" });
+  // Commenting out hasMany to avoid alias conflict
+  // users.hasMany(permissions, { as: "permissions", foreignKey: "user_id" });
+
+  // User Permissions (many-to-many)
+  users.belongsToMany(permissions, {
+    through: user_permissions,
+    foreignKey: 'user_id',
+    otherKey: 'permission_id',
+    as: 'permissions'
+  });
+  permissions.belongsToMany(users, {
+    through: user_permissions,
+    foreignKey: 'permission_id',
+    otherKey: 'user_id',
+    as: 'users'
+  });
+
+  // Add any associations for new token models here if needed
 
   // Travel Plans & User
   travel_plans.belongsTo(users, { as: "user", foreignKey: "user_id" });
@@ -172,7 +203,13 @@ function initModels(sequelize) {
     travel_plans,
     trophies,
     user_trophies,
+    user_permissions,
+    refresh_tokens,
+    email_verification_tokens,
+    password_reset_tokens,
     users,
+    role_permissions,
+    refresh_tokens,
   };
 }
 

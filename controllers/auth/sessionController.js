@@ -1,50 +1,54 @@
-const logger = require('../../utils/logger');
-
 class SessionController {
     constructor(sessionService) {
         this.sessionService = sessionService;
     }
 
-    async getSessions(req, res) {
+    async logout(req, res, next) {
         try {
-            const userId = req.user.id;
-            const sessions = await this.sessionService.getUserSessions(userId);
-            res.status(200).json(sessions);
+            let sessionId = req.headers['x-session-id'] || req.body.sessionId;
+
+            if (!sessionId && req.user && req.user.sessionId) {
+                sessionId = req.user.sessionId;
+            }
+
+            if (!sessionId) {
+                return res.status(400).json({
+                    message: 'Session ID is required for logout. Provide it in the "x-session-id" header or request body.'
+                });
+            }
+
+            const success = await this.sessionService.revokeSession(sessionId);
+            return res.status(200).json({
+                message: success ? 'Logout successful' : 'Session not found or already expired'
+            });
         } catch (error) {
-            logger.error(`Get sessions error: ${error.message}`);
-            res.status(500).json({ message: 'Server error', error: error.message });
+            next(error);
         }
     }
 
-    async revokeSession(req, res) {
+    async getSessions(req, res, next) {
         try {
-            const { sessionId } = req.params;
-            const userId = req.user.id;
+            const userId = req.user?.id;
+            if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
-            await this.sessionService.revokeSession(sessionId, userId);
-            res.status(200).json({ message: 'Session revoked successfully' });
+            const sessions = await this.sessionService.getActiveSessions(userId);
+            return res.status(200).json({ sessions });
         } catch (error) {
-            logger.error(`Revoke session error: ${error.message}`);
-            if (error.message === 'Session not found') {
-                return res.status(404).json({ message: error.message });
-            }
-            if (error.message === 'Unauthorized') {
-                return res.status(401).json({ message: error.message });
-            }
-            res.status(500).json({ message: 'Server error', error: error.message });
+            next(error);
         }
     }
 
-    async revokeAllSessions(req, res) {
+    async logoutAll(req, res, next) {
         try {
-            const userId = req.user.id;
-            const currentSessionId = req.session.id;
+            const userId = req.user?.id;
+            if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
-            await this.sessionService.revokeAllSessions(userId, currentSessionId);
-            res.status(200).json({ message: 'All sessions revoked successfully' });
+            const success = await this.sessionService.revokeAllSessions(userId);
+            return res.status(200).json({
+                message: success ? 'All sessions revoked' : 'Failed to revoke sessions'
+            });
         } catch (error) {
-            logger.error(`Revoke all sessions error: ${error.message}`);
-            res.status(500).json({ message: 'Server error', error: error.message });
+            next(error);
         }
     }
 }

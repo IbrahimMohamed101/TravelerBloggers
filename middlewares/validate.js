@@ -37,9 +37,33 @@ const validate = (schema, property = 'body') => (req, res, next) => {
     next();
 };
 
+const changePasswordSchema = Joi.object({
+    currentPassword: Joi.string().required(),
+    newPassword: Joi.string()
+        .min(8)
+        .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])'))
+        .required()
+});
+
+const updateProfileSchema = Joi.object({
+    first_name: Joi.string().max(50).optional(),
+    last_name: Joi.string().max(50).optional(),
+    username: Joi.string().alphanum().min(3).max(50).optional(),
+    email: Joi.string().email().max(100).optional(),
+    bio: Joi.string().max(500).optional(),
+    gender: Joi.string().valid('male', 'female', 'other').optional(),
+    social_media: Joi.object().optional(),
+    interested_categories: Joi.array().items(Joi.string()).optional(),
+    role: Joi.string().valid('super_admin', 'admin', 'content_manager', 'user').optional(),
+});
+
+const validateUpdateProfile = validate(updateProfileSchema);
+
 // تصدير الدوال
 module.exports = {
     validate,
     validateRegister: validate(registerSchema),
     validateLogin: validate(loginSchema),
+    validateChangePassword: validate(changePasswordSchema),
+    validateUpdateProfile,
 };

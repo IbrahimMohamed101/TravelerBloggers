@@ -7,10 +7,11 @@ class UserController {
         this.userService = userService;
     }
 
+    // 1. Get user profile
     async getProfile(req, res) {
         try {
-            const userId = req.user.id;
-            const user = await this.userService.getUserProfile(userId);
+            const userId = req.user.id; // Get user ID from the JWT
+            const user = await this.userService.getProfile(userId); // Fetch user profile using the service
             res.status(200).json({
                 message: 'Profile retrieved successfully',
                 user: user
@@ -21,12 +22,15 @@ class UserController {
         }
     }
 
+    // 2. Update user profile
     async updateProfile(req, res) {
         try {
-            const userId = req.user.id;
-            const updateData = req.body;
+            const userId = req.user.id; // Get user ID from JWT
+            const updateData = req.body; // Data to update from the request body
 
+            // Call service to update profile
             const updatedUser = await this.userService.updateProfile(userId, updateData);
+
             res.status(200).json({
                 message: 'Profile updated successfully',
                 user: updatedUser
@@ -34,97 +38,79 @@ class UserController {
         } catch (error) {
             logger.error(`Update profile error: ${error.message}`);
             if (error.message === 'Email already exists') {
-                return res.status(409).json({ message: error.message });
+                return res.status(409).json({ message: error.message }); // Conflict if email exists
             }
-            res.status(500).json({ message: 'Server error', error: error.message });
+            res.status(500).json({ message: 'Server error', error: error.message }); // Server error
         }
     }
 
-    async changePassword(req, res) {
-        try {
-            const userId = req.user.id;
-            const { currentPassword, newPassword } = req.body;
-
-            await this.userService.changePassword(userId, currentPassword, newPassword);
-            res.status(200).json({ message: 'Password changed successfully' });
-        } catch (error) {
-            logger.error(`Change password error: ${error.message}`);
-            if (error.message === 'Invalid current password') {
-                return res.status(401).json({ message: error.message });
-            }
-            res.status(500).json({ message: 'Server error', error: error.message });
-        }
-    }
-
-    async requestPasswordReset(req, res) {
-        try {
-            const { email } = req.body;
-            const resetToken = await this.userService.createPasswordResetToken(email);
-
-            // Send password reset email
-            const resetEmail = await emailHelper.getPasswordResetEmail(resetToken);
-            await sendEmail(
-                email,
-                'Password Reset Request',
-                'Please click the link below to reset your password',
-                resetEmail.html,
-                resetEmail.attachments
-            );
-
-            res.status(200).json({ message: 'Password reset email sent' });
-        } catch (error) {
-            logger.error(`Password reset request error: ${error.message}`);
-            if (error.message === 'User not found') {
-                // Still return success to prevent email enumeration
-                return res.status(200).json({ message: 'Password reset email sent' });
-            }
-            res.status(500).json({ message: 'Server error', error: error.message });
-        }
-    }
-
-    async resetPassword(req, res) {
-        try {
-            const { token, newPassword } = req.body;
-            await this.userService.resetPassword(token, newPassword);
-            res.status(200).json({ message: 'Password reset successfully' });
-        } catch (error) {
-            logger.error(`Password reset error: ${error.message}`);
-            if (error.message === 'Invalid or expired reset token') {
-                return res.status(400).json({ message: error.message });
-            }
-            res.status(500).json({ message: 'Server error', error: error.message });
-        }
-    }
-
+    // 3. Delete user account
     async deleteAccount(req, res) {
         try {
-            const userId = req.user.id;
-            const { password } = req.body;
+            const userId = req.user.id; // Get user ID from JWT
+            const { password } = req.body; // Get password from the request body
 
+            // Call service to delete the account
             await this.userService.deleteAccount(userId, password);
+
             res.status(200).json({ message: 'Account deleted successfully' });
         } catch (error) {
             logger.error(`Delete account error: ${error.message}`);
             if (error.message === 'Invalid password') {
-                return res.status(401).json({ message: error.message });
+                return res.status(401).json({ message: error.message }); // Unauthorized if password is incorrect
             }
+            res.status(500).json({ message: 'Server error', error: error.message }); // Server error
+        }
+    }
+
+    // 4. Delete user profile (without password verification)
+    async deleteProfile(req, res) {
+        try {
+            const userId = req.user.id; // Get user ID from JWT
+
+            // Call service to delete the profile
+            await this.userService.deleteProfile(userId);
+
+            res.status(200).json({ message: 'Profile deleted successfully' });
+        } catch (error) {
+            logger.error(`Delete profile error: ${error.message}`);
             res.status(500).json({ message: 'Server error', error: error.message });
         }
     }
 
-    async getUserById(req, res) {
+    // 5. Update user avatar
+    async updateAvatar(req, res) {
         try {
-            const userId = req.params.id;
-            const user = await this.userService.getUserById(userId);
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
+            const userId = req.user.id;
+
+            const avatarFile = req.file; // Assuming you're using multer for file uploads
+            if (!avatarFile) {
+                return res.status(400).json({ message: 'No file uploaded' });
             }
+            const avatarFileName = avatarFile.filename; // Get the file name
+
+            const updatedUser = await this.userService.updateAvatar(userId, avatarFileName);
+
             res.status(200).json({
-                message: 'User retrieved successfully',
-                user: user
+                message: 'Avatar updated successfully',
+                user: updatedUser
             });
         } catch (error) {
-            logger.error(`Get user by ID error: ${error.message}`);
+            logger.error(`Update avatar error: ${error.message}`);
+            res.status(500).json({ message: 'Server error', error: error.message });
+        }
+    }
+
+    // 6. Delete user avatar
+    async deleteAvatar(req, res) {
+        try {
+            const userId = req.user.id;
+
+            await this.userService.deleteAvatar(userId);
+
+            res.status(200).json({ message: 'Avatar deleted successfully' });
+        } catch (error) {
+            logger.error(`Delete avatar error: ${error.message}`);
             res.status(500).json({ message: 'Server error', error: error.message });
         }
     }

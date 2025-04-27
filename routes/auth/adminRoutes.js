@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const AdminService = require('../services/adminService');
-const authorize = require('../middlewares/authorization');
-const logger = require('../utils/logger');
+const AdminService = require('../../services/adminService');
+const authorize = require('../../middlewares/authorization');
+const logger = require('../../utils/logger');
 
 const adminService = new AdminService();
 
