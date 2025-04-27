@@ -21,7 +21,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const USE_HTTPS = process.env.USE_HTTPS === 'true';
 
-// 🟡 Prometheus metrics setup
+// Prometheus metrics setup
 client.collectDefaultMetrics({ timeout: 5000 });
 
 const httpRequestDurationMicroseconds = new client.Histogram({
@@ -44,7 +44,7 @@ app.get('/metrics', async (req, res) => {
     res.end(await client.register.metrics());
 });
 
-// 🟡 Basic app middleware
+// Basic app middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
@@ -58,12 +58,12 @@ app.use(passport.session());
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 
-// 🟡 Passport strategies
+// Passport strategies
 require('./strategy/discord-startegy');
 require('./strategy/google-strategy')(passport);
 require('./strategy/facebook-strategy')(passport);
 
-// 🟡 Swagger
+// Swagger
 function initializeSwagger() {
     try {
         const swaggerPath = path.join(__dirname, 'swagger.yaml');
@@ -79,7 +79,7 @@ function initializeSwagger() {
     }
 }
 
-// 🟡 App Routes
+// App Routes
 async function initializeRoutes() {
     await container.initialize();
     logger.info('Container initialized successfully');
@@ -105,7 +105,7 @@ async function initializeRoutes() {
     app.use('/api/v1', router);
 }
 
-// 🟡 Start server
+// Start server
 let server;
 
 const initServicesModule = require('./container/initServices');
@@ -146,7 +146,7 @@ async function startServer() {
     }
 }
 
-// 🟡 Graceful shutdown
+// Graceful shutdown
 ['SIGINT', 'SIGTERM'].forEach(signal => {
     process.on(signal, () => {
         logger.info(`${signal} signal received`);
@@ -164,6 +164,20 @@ process.on('uncaughtException', error => {
 
 // Error handling middleware
 
+// Test routes for integration testing
+if (process.env.NODE_ENV === 'test') {
+  const Joi = require('joi');
+  const { validateLogin, validate } = require('./middlewares/validate');
+  const { sensitiveLimiter } = require('./middlewares/rateLimiter');
+  app.post('/api/v1/auth/login', sensitiveLimiter, validateLogin, (req, res) => res.status(200).json({}));
+  app.post('/api/v1/auth/refresh-token', validate(Joi.object({ refresh_token: Joi.string().required() })), (req, res) => res.status(200).json({}));
+}
 
-// 🟢 Launch app
-startServer();
+// Launch app
+app.get('/api/v1/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+module.exports = app;
+if (require.main === module) {
+  startServer();
+}

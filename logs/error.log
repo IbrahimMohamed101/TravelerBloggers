@@ -4050,3 +4050,21 @@
 {"level":"error","message":"Login error: UnauthorizedError - Invalid credentials","timestamp":"2025-04-27T15:37:49.599Z"}
 {"level":"error","message":"Login error: Invalid credentials","name":"UnauthorizedError","stack":"UnauthorizedError: Invalid credentials\n    at LoginService.login (/mnt/d/Projects/TravelerBloggers/services/auth/loginService.js:31:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async AuthService.login (/mnt/d/Projects/TravelerBloggers/services/auth/authService.js:39:16)\n    at async AuthController.login (/mnt/d/Projects/TravelerBloggers/controllers/auth/authController.js:37:28)","statusCode":401,"timestamp":"2025-04-27T15:37:57.410Z"}
 {"level":"error","message":"Login error: UnauthorizedError - Invalid credentials","timestamp":"2025-04-27T15:37:57.410Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T15:50:49.145Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T15:50:49.217Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T15:56:35.208Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T15:56:35.226Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T15:59:52.004Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T15:59:52.018Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T16:00:55.430Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T16:00:55.445Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T16:02:09.241Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T16:02:09.258Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T16:03:58.358Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T16:03:58.373Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T16:05:38.272Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T16:05:38.292Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T16:09:37.153Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T16:09:37.167Z"}
+{"level":"error","message":"Error fetching user profile: User not found","timestamp":"2025-04-27T16:11:35.774Z"}
+{"level":"error","message":"Error deleting profile: User not found","timestamp":"2025-04-27T16:11:35.796Z"}
