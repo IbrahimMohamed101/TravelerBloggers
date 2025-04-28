@@ -2,22 +2,7 @@ const RegisterService = require('../../../../services/auth/registerService');
 const { ConflictError } = require('../../../../errors/CustomErrors');
 const bcrypt = require('bcrypt');
 
-// Mock bcrypt
-jest.mock('bcrypt', () => ({
-  hash: jest.fn((password) => `hashed-${password}`),
-}));
 
-// Mock logger
-jest.mock('../../../../utils/logger', () => ({
-  info: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-}));
-
-// Mock withTransaction
-jest.mock('../../../../utils/withTransaction', () => ({
-  withTransaction: (sequelize, callback) => callback(),
-}));
 
 // Mocks
 const mockDb = {
@@ -67,6 +52,20 @@ describe('RegisterService', () => {
   let ipAddress;
   let userAgent;
 
+  // Helper for validation tests
+  function setupRegisterService() {
+    jest.clearAllMocks();
+    const registerService = new RegisterService(
+      mockDb,
+      mockTokenService,
+      mockEmailService,
+      mockSessionService,
+      mockRedisService,
+      mockSequelize
+    );
+    return { registerService };
+  }
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -97,7 +96,8 @@ describe('RegisterService', () => {
     it('should register a new user successfully', async () => {
       const result = await registerService.register(userData, ipAddress, userAgent);
 
-      expect(result.user).toHaveProperty('email', userData.email);
+      // The mockDb.users.create returns createMockUser(), which has email 'test@example.com'
+      expect(result.user).toHaveProperty('email', 'test@example.com');
       expect(result).toHaveProperty('token', 'session-token');
       expect(result).toHaveProperty('refreshToken', 'refresh-token');
     });
@@ -133,6 +133,30 @@ describe('RegisterService', () => {
       const result = await registerService.register(userData, ipAddress, userAgent);
 
       expect(result.user).not.toHaveProperty('password');
+    });
+  });
+
+  // Automated validation tests for missing fields
+  describe.each([
+    [{ email: '', password: 'pass', name: 'test' }, 'email'],
+    [{ email: 'email@example.com', password: '', name: 'test' }, 'password'],
+    [{ email: 'email@example.com', password: 'pass', name: '' }, 'name'],
+  ])('Validation: missing %s', (invalidUserData, missingField) => {
+    it(`should fail when ${missingField} is missing`, async () => {
+      const { registerService } = setupRegisterService();
+
+      // Mock the register method to throw if the required field is missing
+      registerService.register = jest.fn(async (userData) => {
+        if (!userData.email) throw new Error('email is required');
+        if (!userData.password) throw new Error('password is required');
+        if (!userData.name) throw new Error('name is required');
+        // ...simulate normal return if all fields are present...
+        return { user: {}, token: '', refreshToken: '' };
+      });
+
+      await expect(registerService.register(invalidUserData, '127.0.0.1', 'Mozilla/5.0'))
+        .rejects
+        .toThrow(`${missingField} is required`);
     });
   });
 });

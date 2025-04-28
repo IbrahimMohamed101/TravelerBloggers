@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1745795090493" clover="3.2.0">
-  <project timestamp="1745795090493" name="All files">
+<coverage generated="1745807190131" clover="3.2.0">
+  <project timestamp="1745807190131" name="All files">
     <metrics statements="38" coveredstatements="32" conditionals="6" coveredconditionals="6" methods="6" coveredmethods="4" elements="50" coveredelements="42" complexity="0" loc="38" ncloc="38" packages="2" files="2" classes="2"/>
     <package name="errors">
       <metrics statements="10" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="1"/>
@@ -26,12 +26,12 @@
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
-        <line num="8" count="4" type="stmt"/>
-        <line num="9" count="4" type="stmt"/>
-        <line num="10" count="4" type="stmt"/>
-        <line num="11" count="4" type="stmt"/>
-        <line num="12" count="4" type="stmt"/>
-        <line num="13" count="4" type="stmt"/>
+        <line num="8" count="10" type="stmt"/>
+        <line num="9" count="10" type="stmt"/>
+        <line num="10" count="10" type="stmt"/>
+        <line num="11" count="10" type="stmt"/>
+        <line num="12" count="10" type="stmt"/>
+        <line num="13" count="10" type="stmt"/>
         <line num="17" count="4" type="stmt"/>
         <line num="18" count="4" type="stmt"/>
         <line num="23" count="4" type="cond" truecount="2" falsecount="0"/>
