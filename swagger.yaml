@@ -1,0 +1,384 @@
+openapi: 3.0.0
+info:
+  title: Traveler Bloggers Platform API
+  version: 1.0.0
+  description: API for managing users, sessions, emails, tokens, and passwords in the Traveler Bloggers Platform.
+servers:
+  - url: 'http://localhost:3000/api/v1'
+tags:
+  - name: Authentication
+    description: Operations related to user authentication
+  - name: User Profile
+    description: Operations related to user profile management
+  - name: Sessions
+    description: Operations related to user sessions
+  - name: Email
+    description: Operations related to email verification
+  - name: Token
+    description: Operations related to token management
+  - name: Password
+    description: Operations related to password management
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Registers a new user account using email, name, and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+      responses:
+        '200':
+          description: Successful registration
+        '400':
+          description: Bad request or validation error
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login a user
+      description: Logs in a user and returns access and refresh tokens.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+        '401':
+          description: Unauthorized
+
+  /users/profile:
+    put:
+      tags:
+        - User Profile
+      summary: Update user profile
+      description: Updates the authenticated user's profile.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated successfully
+        '401':
+          description: Unauthorized
+
+    get:
+      tags:
+        - User Profile
+      summary: Get user profile
+      description: Returns the authenticated user's profile.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized
+
+    delete:
+      tags:
+        - User Profile
+      summary: Delete user profile
+      description: Deletes the authenticated user's profile.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile deleted successfully
+        '401':
+          description: Unauthorized
+
+  /users/profile/avatar:
+    put:
+      tags:
+        - User Profile
+      summary: Update user avatar
+      description: Updates the authenticated user's avatar.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Avatar updated successfully
+        '401':
+          description: Unauthorized
+
+    delete:
+      tags:
+        - User Profile
+      summary: Delete user avatar
+      description: Deletes the authenticated user's avatar.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Avatar deleted successfully
+        '401':
+          description: Unauthorized
+
+  /auth/sessions:
+    get:
+      tags:
+        - Sessions
+      summary: Get user sessions
+      description: Returns a list of the authenticated user's active sessions.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized
+
+  /auth/revoke-session:
+    post:
+      tags:
+        - Sessions
+      summary: Revoke a user session
+      description: Revokes a specific user session using session ID.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+      responses:
+        '200':
+          description: Session revoked successfully
+        '401':
+          description: Unauthorized
+
+  /auth/logout:
+    post:
+      tags:
+        - Sessions
+      summary: Logout user
+      description: Logs out the user and invalidates the session.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          description: Unauthorized
+
+  /auth/verify-email:
+    get:
+      tags:
+        - Email
+      summary: Verify email
+      description: Verifies the user's email using a token.
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Email verified successfully
+        '400':
+          description: Invalid token
+
+  /auth/resend-verification-email:
+    get:
+      tags:
+        - Email
+      summary: Resend verification email
+      description: Resends the email verification link to the user.
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Verification email sent successfully
+        '400':
+          description: Invalid email
+
+  /auth/refresh-token:
+    post:
+      tags:
+        - Token
+      summary: Refresh token
+      description: Refreshes the JWT access token using a valid refresh token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+        '401':
+          description: Invalid refresh token
+
+  /auth/revoke-token:
+    post:
+      tags:
+        - Token
+      summary: Revoke token
+      description: Revokes a refresh token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token revoked successfully
+        '401':
+          description: Invalid refresh token
+
+  /auth/tokens:
+    get:
+      tags:
+        - Token
+      summary: Get all tokens
+      description: Returns a list of all tokens associated with the authenticated user.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized
+
+  /auth/forgot-password:
+    post:
+      tags:
+        - Password
+      summary: Request password reset
+      description: Sends a password reset token to the user's email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Password reset email sent successfully
+        '400':
+          description: Invalid email
+
+  /auth/reset-password:
+    post:
+      tags:
+        - Password
+      summary: Reset password
+      description: Confirms a new password using the reset token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          description: Invalid token
+
+  /auth/change-password:
+    put:
+      tags:
+        - Password
+      summary: Change password
+      description: Changes the authenticated user's password.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password changed successfully
+        '401':
+          description: Unauthorized
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
