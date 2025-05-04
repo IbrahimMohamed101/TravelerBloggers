@@ -1,4 +1,8 @@
-const { ValidationError, ConflictError } = require('../../errors/CustomErrors');
+const {
+    ValidationError,
+    ConflictError,
+    UnauthorizedError,
+} = require('../../errors/CustomErrors');
 const { withTransaction } = require('../../utils/withTransaction.js');
 const logger = require('../../utils/logger');
 const fs = require('fs').promises;
@@ -13,15 +17,22 @@ class EmailVerificationService {
     }
 
     async verifyEmail(token) {
+        console.log('Token received for verification:', token); // Add logging to debug token
+        let payload;
+        try {
+            payload = await this.tokenService.verifyToken(token);
+        } catch (error) {
+            logger.error('Email verification token invalid:', error);
+            throw new UnauthorizedError('Invalid verification token');
+        }
         return await withTransaction(this.sequelize, async (transaction) => {
-            const payload = await this.tokenService.verifyToken(token);
             if (payload.type !== 'email_verification') {
-                throw new ValidationError('Invalid verification token');
+                throw new UnauthorizedError('Invalid verification token');
             }
 
             const user = await this.db.users.findByPk(payload.userId, { transaction });
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             if (user.email_verified) {
@@ -46,43 +57,34 @@ class EmailVerificationService {
         });
     }
 
-    async resendVerificationEmail(userId) {
-        const user = await this.db.users.findByPk(userId);
-        if (!user) {
-            throw new Error('User not found');
+    async resendVerificationEmailByIdentifier({ userId, email }) {
+        let user;
+
+        if (userId) {
+            user = await this.db.users.findByPk(userId);
+        } else if (email) {
+            user = await this.db.users.findOne({ where: { email } });
+        } else {
+            throw new ValidationError('userId or email is required');
         }
-        if (user.email_verified) {
-            throw new ConflictError('Email already verified');
-        }
 
-        // Generate a new verification token
-        const tokenPayload = {
-            userId: user.id,
-            type: 'email_verification',
-        };
-        const token = await this.tokenService.generateToken(tokenPayload, { expiresIn: '1h' });
+        if (!user) throw new ValidationError('User not found');
+        if (user.email_verified) throw new ConflictError('Email already verified');
 
-        // Construct verification URL (assuming frontend URL is known)
-        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+        const token = await this.tokenService.generateToken(
+            { userId: user.id, type: 'email_verification' },
+            '1h'
+        );
 
-        // Load email template
-        const templatePath = path.join(__dirname, '../../utils/emailTemplates/emailVerification.html');
-        let emailHtml = await fs.readFile(templatePath, 'utf-8');
-        emailHtml = emailHtml.replace('{{link}}', verificationUrl);
-
-        // Send verification email
-        await this.emailService.sendEmail({
+        await this.emailService.sendVerificationEmail({
             to: user.email,
-            subject: 'Resend Email Verification',
-            text: `Please verify your email by clicking the following link: ${verificationUrl}`,
-            html: emailHtml,
+            token,
+            name: user.name || ''
         });
 
         logger.info(`Resent verification email to user: ${user.email}`, { userId: user.id });
 
-        return {
-            message: 'Verification email resent successfully',
-        };
+        return { message: 'Verification email resent successfully' };
     }
 
     #sanitizeUser(user) {

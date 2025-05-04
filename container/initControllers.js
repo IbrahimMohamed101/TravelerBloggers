@@ -11,7 +11,8 @@ function initControllers(services) {
     controllers.authController = new AuthController(
         services.authService,
         services.sessionService,
-        services.tokenService
+        services.tokenService,
+        services.emailVerificationService
     );
 
     controllers.oauthController = new OAuthController(services.authService);

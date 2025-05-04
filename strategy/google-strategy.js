@@ -2,6 +2,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const passport = require('passport');
 const User = require('../models/users');
 const { where } = require('sequelize');
+const { ConflictError } = require('../errors/CustomErrors');
 
 module.exports = (passport) => {
     passport.use(new GoogleStrategy(
@@ -15,7 +16,7 @@ module.exports = (passport) => {
                 console.log('Google profile received:', profile);
 
                 if (!profile.emails || !profile.emails[0]) {
-                    throw new Error('No email found in Google profile');
+                    throw new ConflictError('No email found in Google profile');
                 }
 
                 let user = await User.findOne({ where: { googleId: profile.id } });

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.88% </span>
+                <span class="strong">7.24% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/68</span>
+                <span class='fraction'>5/69</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.88% </span>
+                <span class="strong">7.24% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/68</span>
+                <span class='fraction'>5/69</span>
             </div>
         
             
@@ -207,7 +207,9 @@
 <a name='L142'></a><a href='#L142'>142</a>
 <a name='L143'></a><a href='#L143'>143</a>
 <a name='L144'></a><a href='#L144'>144</a>
-<a name='L145'></a><a href='#L145'>145</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -354,6 +356,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const logger = require('../../utils/logger');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const { ConflictError, ValidationError } = require('../../errors/CustomErrors');
 &nbsp;
 class UserService {
 <span class="fstat-no" title="function not covered" >    co</span>nstructor(db, redisService, tokenService) {
@@ -367,7 +370,7 @@ class UserService {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const user = <span class="cstat-no" title="statement not covered" >await this.User.findByPk(userId);</span>
 <span class="cstat-no" title="statement not covered" >            if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error('User not found');</span>
+<span class="cstat-no" title="statement not covered" >                throw new ValidationError('User not found');</span>
             }
             const { password, ...userWithoutPassword } = <span class="cstat-no" title="statement not covered" >user.toJSON();</span>
 <span class="cstat-no" title="statement not covered" >            return userWithoutPassword;</span>
@@ -381,7 +384,7 @@ class UserService {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const user = <span class="cstat-no" title="statement not covered" >await this.User.findByPk(userId);</span>
 <span class="cstat-no" title="statement not covered" >            if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error('User not found');</span>
+<span class="cstat-no" title="statement not covered" >                throw new ValidationError('User not found');</span>
             }
 &nbsp;
             // Delete user sessions
@@ -401,7 +404,7 @@ class UserService {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const user = <span class="cstat-no" title="statement not covered" >await this.User.findByPk(userId);</span>
 <span class="cstat-no" title="statement not covered" >            if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error('User not found');</span>
+<span class="cstat-no" title="statement not covered" >                throw new ValidationError('User not found');</span>
             }
 &nbsp;
             // Check if email is being updated and if it's already taken
@@ -410,7 +413,7 @@ class UserService {
                     where: { email: updateData.email }
                 });
 <span class="cstat-no" title="statement not covered" >                if (existingUser) {</span>
-<span class="cstat-no" title="statement not covered" >                    throw new Error('Email already exists');</span>
+<span class="cstat-no" title="statement not covered" >                    throw new ConflictError('Email already exists');</span>
                 }
             }
 &nbsp;
@@ -431,13 +434,13 @@ class UserService {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const user = <span class="cstat-no" title="statement not covered" >await this.User.findByPk(userId);</span>
 <span class="cstat-no" title="statement not covered" >            if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error('User not found');</span>
+<span class="cstat-no" title="statement not covered" >                throw new ValidationError('User not found');</span>
             }
 &nbsp;
             // Verify password
             const isValid = <span class="cstat-no" title="statement not covered" >await bcrypt.compare(password, user.password);</span>
 <span class="cstat-no" title="statement not covered" >            if (!isValid) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error('Invalid password');</span>
+<span class="cstat-no" title="statement not covered" >                throw new ValidationError('Invalid password');</span>
             }
 &nbsp;
             // Delete user sessions
@@ -456,7 +459,7 @@ class UserService {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const user = <span class="cstat-no" title="statement not covered" >await this.User.findByPk(userId);</span>
 <span class="cstat-no" title="statement not covered" >            if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error('User not found');</span>
+<span class="cstat-no" title="statement not covered" >                throw new ValidationError('User not found');</span>
             }
 &nbsp;
             // تحديث صورة المستخدم
@@ -479,7 +482,7 @@ class UserService {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const user = <span class="cstat-no" title="statement not covered" >await this.User.findByPk(userId);</span>
 <span class="cstat-no" title="statement not covered" >            if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error('User not found');</span>
+<span class="cstat-no" title="statement not covered" >                throw new ValidationError('User not found');</span>
             }
 &nbsp;
             // حذف صورة المستخدم
@@ -502,7 +505,7 @@ module.exports = UserService;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-27T17:03:27.677Z
+                at 2025-05-01T00:21:20.932Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

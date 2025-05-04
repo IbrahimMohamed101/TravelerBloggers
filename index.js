@@ -103,6 +103,12 @@ async function initializeRoutes() {
     router.use('/auth', passwordRoutes);
 
     app.use('/api/v1', router);
+
+    // Catch-all for unmatched routes
+    app.use('*', (req, res, next) => {
+        const { NotFoundError } = require('./errors/CustomErrors');
+        next(new NotFoundError('API route not found'));
+    });
 }
 
 // Start server
@@ -166,18 +172,18 @@ process.on('uncaughtException', error => {
 
 // Test routes for integration testing
 if (process.env.NODE_ENV === 'test') {
-  const Joi = require('joi');
-  const { validateLogin, validate } = require('./middlewares/validate');
-  const { sensitiveLimiter } = require('./middlewares/rateLimiter');
-  app.post('/api/v1/auth/login', sensitiveLimiter, validateLogin, (req, res) => res.status(200).json({}));
-  app.post('/api/v1/auth/refresh-token', validate(Joi.object({ refresh_token: Joi.string().required() })), (req, res) => res.status(200).json({}));
+    const Joi = require('joi');
+    const { validateLogin, validate } = require('./middlewares/validate');
+    const { sensitiveLimiter } = require('./middlewares/rateLimiter');
+    app.post('/api/v1/auth/login', sensitiveLimiter, validateLogin, (req, res) => res.status(200).json({}));
+    app.post('/api/v1/auth/refresh-token', validate(Joi.object({ refresh_token: Joi.string().required() })), (req, res) => res.status(200).json({}));
 }
 
 // Launch app
 app.get('/api/v1/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 module.exports = app;
 if (require.main === module) {
-  startServer();
+    startServer();
 }

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const Blog = sequelize.define('blogs', {
     id: {
       type: DataTypes.UUID,
@@ -45,7 +45,7 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: true
     },
     status: {
-      type: DataTypes.ENUM("draft","published"),
+      type: DataTypes.ENUM("draft", "published"),
       allowNull: true,
       defaultValue: "draft"
     },
@@ -103,7 +103,7 @@ module.exports = function(sequelize, DataTypes) {
     ]
   });
 
-  Blog.associate = function(models) {
+  Blog.associate = function (models) {
     // Author relationship
     Blog.belongsTo(models.users, {
       as: 'author',
@@ -116,6 +116,14 @@ module.exports = function(sequelize, DataTypes) {
       foreignKey: 'blog_id',
       otherKey: 'category_id',
       as: 'blogCategories'
+    });
+
+    // Tags relationship
+    Blog.belongsToMany(models.tags, {
+      through: models.blog_tags,
+      foreignKey: 'blog_id',
+      otherKey: 'tag_id',
+      as: 'tags'
     });
 
     // Blog reactions

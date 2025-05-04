@@ -28,22 +28,15 @@ module.exports = (container) => {
         }
     );
 
-    router.get(
+    router.post(
         '/resend-verification-email',
         validate(Joi.object({
-            userId: Joi.string().required().messages({
-                'string.base': 'userId must be a string',
-                'any.required': 'userId is required',
-            }),
-        }), 'query'),
-        async (req, res, next) => {
-            try {
-                await authController.resendVerificationEmail(req, res, next);
-            } catch (error) {
-                next(error);
-            }
-        }
+            userId: Joi.string(),
+            email: Joi.string().email()
+        }).or('userId', 'email'), 'body'),
+        (req, res, next) => authController.resendVerificationEmail(req, res, next)
     );
+
 
     return router;
 };

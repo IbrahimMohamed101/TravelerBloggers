@@ -44,7 +44,7 @@ class LoginService {
             await this.redisService.setWithExpiry(
                 `session:${session.id}`,
                 session,
-                24 * 60 * 60
+                24 * 60 * 60 // 24 hours
             );
 
             const refreshToken = await this.tokenService.generateRefreshToken(user.id);
@@ -81,13 +81,32 @@ class LoginService {
 
     // Helper methods
     async _checkAccountLock(email) {
-        const attempts = await this.redisService.getWithExpiry(`login_attempts:${email}`);
-        return attempts && attempts >= 5;
+        const key = `login_attempts:${email}`;
+        const attempts = parseInt(await this.redisService.getWithExpiry(key), 10) || 0;
+
+        if (attempts >= 15) {
+            await this.redisService.expire(key, 24 * 60 * 60); // 24 hours lock
+            return true;
+        } else if (attempts >= 10) {
+            await this.redisService.expire(key, 60 * 60); // 1 hour lock
+            return true;
+        } else if (attempts >= 5) {
+            await this.redisService.expire(key, 15 * 60); // 15 minutes lock
+            return true;
+        }
+
+        return false;
     }
 
     async _incrementLoginAttempts(email) {
-        const attempts = await this.redisService.getWithExpiry(`login_attempts:${email}`) || 0;
-        await this.redisService.setWithExpiry(`login_attempts:${email}`, attempts + 1, 15 * 60);
+        const key = `login_attempts:${email}`;
+        const exists = await this.redisService.exists(key);
+
+        if (exists) {
+            await this.redisService.incr(key);
+        } else {
+            await this.redisService.setWithExpiry(key, 1, 15 * 60); // 15 minutes
+        }
     }
 
     async _resetLoginAttempts(email) {

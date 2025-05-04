@@ -2,7 +2,11 @@ const RegisterService = require('./registerService');
 const LoginService = require('./loginService');
 const TokenService = require('./tokenService');
 const EmailVerificationService = require('./emailVerificationService');
-const AuthHelpers = require('./helpers');
+
+function sanitizeUser(user) {
+    const { password, ...safeUser } = user.toJSON ? user.toJSON() : user;
+    return safeUser;
+}
 
 class AuthService {
     constructor(db, redisService, tokenService, sessionService, oauthService, emailService, sequelize) {
@@ -56,7 +60,7 @@ class AuthService {
     async getUserById(userId) {
         try {
             const user = await this.db.users.findByPk(userId);
-            return user ? AuthHelpers.sanitizeUser(user) : null;
+            return user ? sanitizeUser(user) : null;
         } catch (error) {
             logger.error('Get user error:', error);
             throw error;

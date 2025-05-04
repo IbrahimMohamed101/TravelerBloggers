@@ -1,5 +1,6 @@
 const db = require('../config/database');
 const logger = require('../utils/logger');
+const { ConflictError, ValidationError } = require('../errors/CustomErrors');
 
 class AdminService {
     constructor() {
@@ -26,12 +27,12 @@ class AdminService {
         try {
             const allowedRoles = ['super_admin', 'admin', 'content_manager', 'user'];
             if (!allowedRoles.includes(newRole)) {
-                throw new Error('Invalid role specified');
+                throw new ConflictError('Invalid role specified');
             }
 
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             await user.update({ role: newRole });
@@ -47,7 +48,7 @@ class AdminService {
         try {
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             const newStatus = !user.is_active;

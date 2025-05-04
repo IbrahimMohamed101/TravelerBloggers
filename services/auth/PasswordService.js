@@ -1,5 +1,9 @@
 const logger = require('../../utils/logger');
 const { withTransaction } = require('../../utils/withTransaction.js');
+const {
+    ValidationError,
+    UnauthorizedError,
+} = require('../../errors/CustomErrors');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -29,13 +33,13 @@ class PasswordService {
                 });
 
                 if (!user) {
-                    throw new Error('User not found');
+                    throw new ValidationError('User not found');
                 }
 
                 const isValid = await bcrypt.compare(currentPassword, user.password);
 
                 if (!isValid) {
-                    throw new Error('Invalid current password');
+                    throw new UnauthorizedError('Invalid current password');
                 }
 
                 const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -64,7 +68,7 @@ class PasswordService {
         try {
             const user = await this.User.findOne({ where: { email } });
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // Generate reset token
@@ -107,12 +111,12 @@ class PasswordService {
             logger.info(`User ID from Redis: ${userId}`);
 
             if (!userId) {
-                throw new Error('Invalid or expired reset token');
+                throw new ValidationError('Invalid or expired reset token');
             }
 
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // Hash new password

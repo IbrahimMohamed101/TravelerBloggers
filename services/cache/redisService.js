@@ -53,7 +53,57 @@ class RedisService {
         }
     }
 
-    // Set a key with TTL
+    /** ---------- RAW Access ---------- */
+
+    async getRaw(key) {
+        if (!this.enabled || !this.client) return null;
+        try {
+            return await this.client.get(key);
+        } catch (error) {
+            logger.error(`Redis getRaw error for key "${key}":`, error);
+            return null;
+        }
+    }
+
+    async getNumber(key) {
+        const value = await this.getRaw(key);
+        return parseInt(value, 10) || 0;
+    }
+
+    async exists(key) {
+        if (!this.enabled || !this.client) return false;
+        try {
+            return await this.client.exists(key);
+        } catch (error) {
+            logger.error(`Redis exists error for key "${key}":`, error);
+            return false;
+        }
+    }
+
+    async incr(key) {
+        if (!this.enabled || !this.client) return false;
+        try {
+            await this.client.incr(key);
+            return true;
+        } catch (error) {
+            logger.error(`Redis incr error for key "${key}":`, error);
+            return false;
+        }
+    }
+
+    async expire(key, ttlSeconds) {
+        if (!this.enabled || !this.client) return false;
+        try {
+            await this.client.expire(key, ttlSeconds);
+            return true;
+        } catch (error) {
+            logger.error(`Redis expire error for key "${key}":`, error);
+            return false;
+        }
+    }
+
+    /** ---------- JSON Handling ---------- */
+
     async setWithExpiry(key, value, ttlSeconds) {
         if (!this.enabled || !this.client) return false;
         try {
@@ -65,19 +115,19 @@ class RedisService {
         }
     }
 
-    // Get a key and parse JSON
     async getWithExpiry(key) {
         if (!this.enabled || !this.client) return null;
         try {
             const value = await this.client.get(key);
             return value ? JSON.parse(value) : null;
         } catch (error) {
-            logger.error(`Redis get error for key "${key}":`, error);
+            logger.error(`Redis getWithExpiry error for key "${key}":`, error);
             return null;
         }
     }
 
-    // Delete a specific key
+    /** ---------- Key Deletion ---------- */
+
     async deleteKey(key) {
         if (!this.enabled || !this.client) return false;
         try {
@@ -89,7 +139,6 @@ class RedisService {
         }
     }
 
-    // Delete all keys matching a pattern
     async deletePattern(pattern) {
         if (!this.enabled || !this.client) return false;
         try {
@@ -108,7 +157,8 @@ class RedisService {
         }
     }
 
-    // Add item to list (e.g. for user sessions)
+    /** ---------- List Operations ---------- */
+
     async addToList(key, value, ttlSeconds = null) {
         if (!this.enabled || !this.client) return false;
         try {
@@ -121,7 +171,6 @@ class RedisService {
         }
     }
 
-    // Get list of items
     async getList(key) {
         if (!this.enabled || !this.client) return [];
         try {
@@ -132,7 +181,6 @@ class RedisService {
         }
     }
 
-    // Remove item from list
     async removeFromList(key, value) {
         if (!this.enabled || !this.client) return false;
         try {

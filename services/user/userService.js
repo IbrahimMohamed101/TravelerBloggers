@@ -1,6 +1,7 @@
 const logger = require('../../utils/logger');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const { ConflictError, ValidationError } = require('../../errors/CustomErrors');
 
 class UserService {
     constructor(db, redisService, tokenService) {
@@ -14,7 +15,7 @@ class UserService {
         try {
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
             const { password, ...userWithoutPassword } = user.toJSON();
             return userWithoutPassword;
@@ -28,7 +29,7 @@ class UserService {
         try {
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // Delete user sessions
@@ -48,7 +49,7 @@ class UserService {
         try {
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // Check if email is being updated and if it's already taken
@@ -57,7 +58,7 @@ class UserService {
                     where: { email: updateData.email }
                 });
                 if (existingUser) {
-                    throw new Error('Email already exists');
+                    throw new ConflictError('Email already exists');
                 }
             }
 
@@ -78,13 +79,13 @@ class UserService {
         try {
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // Verify password
             const isValid = await bcrypt.compare(password, user.password);
             if (!isValid) {
-                throw new Error('Invalid password');
+                throw new ValidationError('Invalid password');
             }
 
             // Delete user sessions
@@ -103,7 +104,7 @@ class UserService {
         try {
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // تحديث صورة المستخدم
@@ -126,7 +127,7 @@ class UserService {
         try {
             const user = await this.User.findByPk(userId);
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // حذف صورة المستخدم

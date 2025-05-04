@@ -1,5 +1,7 @@
 const { OAuth2Client } = require('google-auth-library');
 const axios = require('axios');
+const { UnauthorizedError } = require('../../errors/CustomErrors');
+
 const logger = require('../../utils/logger');
 
 class OAuthService {
@@ -24,7 +26,7 @@ class OAuthService {
             };
         } catch (error) {
             logger.error('Google token verification error:', error);
-            throw new Error('Invalid Google token');
+            throw new UnauthorizedError('Invalid Google token');
         }
     }
 
@@ -46,7 +48,7 @@ class OAuthService {
             };
         } catch (error) {
             logger.error('Facebook token verification error:', error);
-            throw new Error('Invalid Facebook token');
+            throw new UnauthorizedError('Invalid Facebook token');
         }
     }
 
@@ -67,7 +69,7 @@ class OAuthService {
             };
         } catch (error) {
             logger.error('Discord token verification error:', error);
-            throw new Error('Invalid Discord token');
+            throw new UnauthorizedError('Invalid Discord token');
         }
     }
 }

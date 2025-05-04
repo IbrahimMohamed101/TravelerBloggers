@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { ConflictError } = require('../../errors/CustomErrors');
+const { ConflictError, UnauthorizedError } = require('../../errors/CustomErrors');
 const logger = require('../../utils/logger');
 const { withTransaction } = require('../../utils/withTransaction.js');
 
@@ -32,7 +32,7 @@ class RegisterService {
             });
 
             if (!defaultRole) {
-                throw new Error('Default role not found');
+                throw new UnauthorizedError('Default role not found');
             }
 
             const user = await this.db.users.create({

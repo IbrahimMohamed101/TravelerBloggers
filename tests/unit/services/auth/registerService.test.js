@@ -1,8 +1,6 @@
 const RegisterService = require('../../../../services/auth/registerService');
-const { ConflictError } = require('../../../../errors/CustomErrors');
+const { ConflictError, UnauthorizedError } = require('../../../../errors/CustomErrors');
 const bcrypt = require('bcrypt');
-
-
 
 // Mocks
 const mockDb = {
@@ -107,7 +105,7 @@ describe('RegisterService', () => {
 
       await expect(registerService.register(userData, ipAddress, userAgent))
         .rejects
-        .toThrow(ConflictError);
+        .toThrowError(new ConflictError('Email already registered'));
 
       expect(mockDb.users.create).not.toHaveBeenCalled();
     });
@@ -117,7 +115,7 @@ describe('RegisterService', () => {
 
       await expect(registerService.register(userData, ipAddress, userAgent))
         .rejects
-        .toThrow('Default role not found');
+        .toThrowError(new UnauthorizedError('Default role not found'));
     });
 
     it('should sanitize user correctly even if toJSON is missing', async () => {

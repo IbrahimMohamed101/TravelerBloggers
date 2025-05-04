@@ -1,5 +1,7 @@
 const logger = require('../utils/logger');
 const db = require('../config/database');
+const { ConflictError, ValidationError } = require('../errors/CustomErrors');
+
 
 class UserService {
     constructor() {
@@ -12,7 +14,7 @@ class UserService {
             // Check all possible naming conventions
             this.User = db.Users || db.users || db.User;
             if (!this.User) {
-                throw new Error('User model not found in database configuration');
+                throw new ValidationError('User model not found in database configuration');
             }
             this.initialized = true;
             logger.info('UserService initialized successfully');
@@ -45,7 +47,7 @@ class UserService {
             });
 
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             return user;
@@ -61,7 +63,7 @@ class UserService {
             const user = await this.User.findByPk(userId);
 
             if (!user) {
-                throw new Error('User not found');
+                throw new ValidationError('User not found');
             }
 
             // Check if username is being updated and if it's already taken
@@ -70,7 +72,7 @@ class UserService {
                     where: { username: updates.username }
                 });
                 if (existingUser) {
-                    throw new Error('Username already taken');
+                    throw new ConflictError('Username already taken');
                 }
             }
 

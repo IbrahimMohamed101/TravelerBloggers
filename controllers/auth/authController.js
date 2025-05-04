@@ -1,10 +1,11 @@
 const logger = require('../../utils/logger');
 
 class AuthController {
-    constructor(authService, sessionService, tokenService) {
+    constructor(authService, sessionService, tokenService, emailVerificationService) {
         this.authService = authService;
         this.sessionService = sessionService;
         this.tokenService = tokenService;
+        this.emailVerificationService = emailVerificationService;
     }
 
     async register(req, res, next) {
@@ -84,17 +85,15 @@ class AuthController {
 
     async resendVerificationEmail(req, res, next) {
         try {
-            const userId = req.query.userId;
-            if (!userId) {
-                return res.status(400).json({ message: 'userId query parameter is required' });
-            }
-            const result = await this.authService.resendVerificationEmail(userId);
+            const { userId, email } = req.body;
+            const result = await this.emailVerificationService.resendVerificationEmailByIdentifier({ userId, email });
             res.status(200).json(result);
         } catch (error) {
             logger.error(`Resend verification email error: ${error.message}`);
             next(error);
         }
     }
+
 }
 
 module.exports = AuthController;

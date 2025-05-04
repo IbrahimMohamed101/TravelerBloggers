@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.14% </span>
+                <span class="strong">47.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/35</span>
+                <span class='fraction'>17/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>2/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.14% </span>
+                <span class="strong">47.22% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/35</span>
+                <span class='fraction'>17/36</span>
             </div>
         
             
@@ -143,32 +143,40 @@
 <a name='L78'></a><a href='#L78'>78</a>
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,28 +235,32 @@
 const LoginService = require('./loginService');
 const TokenService = require('./tokenService');
 const EmailVerificationService = require('./emailVerificationService');
-const AuthHelpers = require('./helpers');
+&nbsp;
+function <span class="fstat-no" title="function not covered" >sanitizeUser(</span>user) {
+    const { password, ...safeUser } = <span class="cstat-no" title="statement not covered" >user.toJSON ? user.toJSON() : user;</span>
+<span class="cstat-no" title="statement not covered" >    return safeUser;</span>
+}
 &nbsp;
 class AuthService {
-<span class="fstat-no" title="function not covered" >    co</span>nstructor(db, redisService, tokenService, sessionService, oauthService, emailService, sequelize) {
-<span class="cstat-no" title="statement not covered" >        this.db = db;</span>
-<span class="cstat-no" title="statement not covered" >        this.redisService = redisService;</span>
-<span class="cstat-no" title="statement not covered" >        this.tokenService = tokenService;</span>
-<span class="cstat-no" title="statement not covered" >        this.sessionService = sessionService;</span>
-<span class="cstat-no" title="statement not covered" >        this.oauthService = oauthService;</span>
-<span class="cstat-no" title="statement not covered" >        this.emailService = emailService;</span>
-<span class="cstat-no" title="statement not covered" >        this.sequelize = sequelize;</span>
+    constructor(db, redisService, tokenService, sessionService, oauthService, emailService, sequelize) {
+        this.db = db;
+        this.redisService = redisService;
+        this.tokenService = tokenService;
+        this.sessionService = sessionService;
+        this.oauthService = oauthService;
+        this.emailService = emailService;
+        this.sequelize = sequelize;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        this.registerService = new RegisterService(db, tokenService, emailService, sessionService, redisService, sequelize);</span>
-<span class="cstat-no" title="statement not covered" >        this.loginService = new LoginService(db, tokenService, sessionService, redisService);</span>
-<span class="cstat-no" title="statement not covered" >        this.tokenServiceWrapper = new TokenService(db, tokenService);</span>
-<span class="cstat-no" title="statement not covered" >        this.emailVerificationService = new EmailVerificationService(db, tokenService, sequelize, emailService);</span>
+        this.registerService = new RegisterService(db, tokenService, emailService, sessionService, redisService, sequelize);
+        this.loginService = new LoginService(db, tokenService, sessionService, redisService);
+        this.tokenServiceWrapper = new TokenService(db, tokenService);
+        this.emailVerificationService = new EmailVerificationService(db, tokenService, sequelize, emailService);
     }
 &nbsp;
 &nbsp;
 &nbsp;
-<span class="fstat-no" title="function not covered" >    as</span>ync register(userData, ipAddress, userAgent) {
-<span class="cstat-no" title="statement not covered" >        return await this.registerService.register(userData, ipAddress, userAgent);</span>
+    async register(userData, ipAddress, userAgent) {
+        return await this.registerService.register(userData, ipAddress, userAgent);
     }
 &nbsp;
 <span class="fstat-no" title="function not covered" >    as</span>ync verifyEmail(token) {
@@ -281,7 +293,7 @@ class AuthService {
 <span class="fstat-no" title="function not covered" >    as</span>ync getUserById(userId) {
 <span class="cstat-no" title="statement not covered" >        try {</span>
             const user = <span class="cstat-no" title="statement not covered" >await this.db.users.findByPk(userId);</span>
-<span class="cstat-no" title="statement not covered" >            return user ? AuthHelpers.sanitizeUser(user) : null;</span>
+<span class="cstat-no" title="statement not covered" >            return user ? sanitizeUser(user) : null;</span>
         } catch (error) {
 <span class="cstat-no" title="statement not covered" >            logger.error('Get user error:', error);</span>
 <span class="cstat-no" title="statement not covered" >            throw error;</span>
@@ -310,7 +322,7 @@ module.exports = AuthService;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-27T17:03:27.677Z
+                at 2025-05-01T00:21:20.932Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

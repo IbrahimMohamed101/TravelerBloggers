@@ -1,6 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
 const logger = require('../../utils/logger');
-
 class SessionService {
     constructor(redisService, tokenService) {
         this.redisService = redisService;

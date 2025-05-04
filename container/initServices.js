@@ -4,10 +4,11 @@ const SessionService = require('../services/auth/sessionService');
 const OAuthService = require('../services/auth/oauthService');
 const AuthService = require('../services/auth/authService');
 const UserService = require('../services/user/userService');
-const PasswordService = require('../services/auth/PasswordService');
+const PasswordService = require('../services/auth/passwordService');
 const emailService = require('../services/email/emailService');
 const logger = require('../utils/logger');
 const { enableAuditLog, useRedis } = require('./containerConfig');
+const EmailVerificationService = require('../services/auth/emailVerificationService');
 
 const { initializePermissions } = require('../services/permission/permissionService');
 const { initializeRolePermissions } = require('../services/permission/roleService');
@@ -48,6 +49,10 @@ async function initServices(db, sequelize) {
     services.authService = new AuthService(
         db, services.redisService, services.tokenService,
         services.sessionService, services.oauthService, emailService, sequelize
+    );
+
+    services.emailVerificationService = new EmailVerificationService(
+        db, services.tokenService, sequelize, emailService
     );
 
     services.userService = new UserService(db, services.redisService, services.tokenService);

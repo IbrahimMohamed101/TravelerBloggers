@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.66% </span>
+                <span class="strong">46.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/107</span>
+                <span class='fraction'>51/110</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.64% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/17</span>
+                <span class='fraction'>3/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">49.03% </span>
+                <span class="strong">47.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>51/104</span>
+                <span class='fraction'>51/107</span>
             </div>
         
             
@@ -246,7 +246,13 @@
 <a name='L181'></a><a href='#L181'>181</a>
 <a name='L182'></a><a href='#L182'>182</a>
 <a name='L183'></a><a href='#L183'>183</a>
-<a name='L184'></a><a href='#L184'>184</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -351,6 +357,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -534,6 +546,12 @@ async function <span class="fstat-no" title="function not covered" >initializeRo
 <span class="cstat-no" title="statement not covered" >    router.use('/auth', passwordRoutes);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    app.use('/api/v1', router);</span>
+&nbsp;
+    // Catch-all for unmatched routes
+<span class="cstat-no" title="statement not covered" >    app.use('*', <span class="fstat-no" title="function not covered" >(r</span>eq, res, next) =&gt; {</span>
+        const { NotFoundError } = <span class="cstat-no" title="statement not covered" >require('./errors/CustomErrors');</span>
+<span class="cstat-no" title="statement not covered" >        next(new NotFoundError('API route not found'));</span>
+    });
 }
 &nbsp;
 // Start server
@@ -597,20 +615,20 @@ process.on('uncaughtException', <span class="fstat-no" title="function not cover
 &nbsp;
 // Test routes for integration testing
 <span class="missing-if-branch" title="else path not taken" >E</span>if (process.env.NODE_ENV === 'test') {
-  const Joi = require('joi');
-  const { validateLogin, validate } = require('./middlewares/validate');
-  const { sensitiveLimiter } = require('./middlewares/rateLimiter');
-  app.post('/api/v1/auth/login', sensitiveLimiter, validateLogin, <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; <span class="cstat-no" title="statement not covered" >res.status(200).json({}))</span>;
-  app.post('/api/v1/auth/refresh-token', validate(Joi.object({ refresh_token: Joi.string().required() })), <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; <span class="cstat-no" title="statement not covered" >res.status(200).json({}))</span>;
+    const Joi = require('joi');
+    const { validateLogin, validate } = require('./middlewares/validate');
+    const { sensitiveLimiter } = require('./middlewares/rateLimiter');
+    app.post('/api/v1/auth/login', sensitiveLimiter, validateLogin, <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; <span class="cstat-no" title="statement not covered" >res.status(200).json({}))</span>;
+    app.post('/api/v1/auth/refresh-token', validate(Joi.object({ refresh_token: Joi.string().required() })), <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; <span class="cstat-no" title="statement not covered" >res.status(200).json({}))</span>;
 }
 &nbsp;
 // Launch app
 app.get('/api/v1/health', <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {
-<span class="cstat-no" title="statement not covered" >  res.json({ status: 'ok', timestamp: new Date().toISOString() });</span>
+<span class="cstat-no" title="statement not covered" >    res.json({ status: 'ok', timestamp: new Date().toISOString() });</span>
 });
 module.exports = app;
 <span class="missing-if-branch" title="if path not taken" >I</span>if (require.main === module) {
-<span class="cstat-no" title="statement not covered" >  startServer();</span>
+<span class="cstat-no" title="statement not covered" >    startServer();</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -619,7 +637,7 @@ module.exports = app;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-27T17:03:27.677Z
+                at 2025-05-01T00:21:20.932Z
             </div>
         <script src="../prettify.js"></script>
         <script>

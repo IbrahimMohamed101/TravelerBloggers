@@ -5,4 +5,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   testMatch: ['<rootDir>/tests/**/*.test.js'],
   "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
+  transform: {
+    '^.+\\.js$': 'babel-jest',
+  },
 };

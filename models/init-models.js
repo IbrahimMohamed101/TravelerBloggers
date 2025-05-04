@@ -5,6 +5,7 @@ var _audit_logs = require("./audit_logs");
 var _blog_categories = require("./blog_categories");
 var _blog_reactions = require("./blog_reactions");
 var _blogs = require("./blogs");
+var _blog_tags = require("./blog_tags");
 var _categories = require("./categories");
 var _comment_reactions = require("./comment_reactions");
 var _comments = require("./comments");
@@ -18,6 +19,7 @@ var _post_reactions = require("./post_reactions");
 var _posts = require("./posts");
 var _reactions = require("./reactions");
 var _sessions = require("./sessions");
+var _tags = require("./tags");
 var _travel_plan_locations = require("./travel_plan_locations");
 var _travel_plan_shares = require("./travel_plan_shares");
 var _travel_plans = require("./travel_plans");
@@ -38,6 +40,7 @@ function initModels(sequelize) {
   var blog_categories = _blog_categories(sequelize, DataTypes);
   var blog_reactions = _blog_reactions(sequelize, DataTypes);
   var blogs = _blogs(sequelize, DataTypes);
+  var blog_tags = _blog_tags(sequelize, DataTypes);
   var categories = _categories(sequelize, DataTypes);
   var comment_reactions = _comment_reactions(sequelize, DataTypes);
   var comments = _comments(sequelize, DataTypes);
@@ -51,6 +54,7 @@ function initModels(sequelize) {
   var posts = _posts(sequelize, DataTypes);
   var reactions = _reactions(sequelize, DataTypes);
   var sessions = _sessions(sequelize, DataTypes);
+  var tags = _tags(sequelize, DataTypes);
   var travel_plan_locations = _travel_plan_locations(sequelize, DataTypes);
   var travel_plan_shares = _travel_plan_shares(sequelize, DataTypes);
   var travel_plans = _travel_plans(sequelize, DataTypes);
@@ -165,7 +169,7 @@ function initModels(sequelize) {
 
   // Travel Plan Shares
   travel_plan_shares.belongsTo(travel_plans, { as: "plan", foreignKey: "travel_plan_id" });
-  travel_plans.hasMany(travel_plan_shares, { as: "shares", foreignKey: "travel_plan_id" });
+  travel_plan_shares.hasMany(travel_plan_shares, { as: "shares", foreignKey: "travel_plan_id" });
   travel_plan_shares.belongsTo(users, { as: "user", foreignKey: "user_id" });
   users.hasMany(travel_plan_shares, { as: "travel_plan_shares", foreignKey: "user_id" });
 
@@ -185,6 +189,7 @@ function initModels(sequelize) {
     blog_categories,
     blog_reactions,
     blogs,
+    blog_tags,
     categories,
     comment_reactions,
     comments,
@@ -198,6 +203,7 @@ function initModels(sequelize) {
     posts,
     reactions,
     sessions,
+    tags,
     travel_plan_locations,
     travel_plan_shares,
     travel_plans,

@@ -23,7 +23,6 @@ class TokenService {
     async generateRefreshToken(userId, expiresIn = '7d', transaction = null) {
         const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn });
 
-        // إذا كان db متاحًا، احفظ التوكن
         if (this.db && this.db.refresh_tokens) {
             await this.db.refresh_tokens.create({
                 token: refreshToken,
@@ -72,7 +71,7 @@ class TokenService {
 
     async revokeToken(refreshToken) {
         try {
-            // إذا كان db متاحًا، قم بإلغاء التوكن
+
             if (this.db && this.db.refresh_tokens) {
                 const token = await this.db.refresh_tokens.findOne({
                     where: { token: refreshToken }
@@ -91,7 +90,7 @@ class TokenService {
 
     async listActiveTokens(userId) {
         try {
-            // إذا كان db متاحًا، اسرد التوكنز النشطة
+
             if (this.db && this.db.refresh_tokens) {
                 return await this.db.refresh_tokens.findAll({
                     where: { user_id: userId, is_revoked: false }
