@@ -53,6 +53,36 @@ class RedisService {
         }
     }
 
+    async connect() {
+        await this.initialize();
+    }
+
+    // Alias methods for compatibility
+    async get(key) {
+        if (!this.enabled || !this.client) return null;
+        try {
+            return await this.client.get(key);
+        } catch (error) {
+            logger.error(`Redis get error for key "${key}":`, error);
+            return null;
+        }
+    }
+
+    async set(key, value, ttlSeconds) {
+        if (!this.enabled || !this.client) return false;
+        try {
+            if (ttlSeconds) {
+                await this.client.set(key, value, { EX: ttlSeconds });
+            } else {
+                await this.client.set(key, value);
+            }
+            return true;
+        } catch (error) {
+            logger.error(`Redis set error for key "${key}":`, error);
+            return false;
+        }
+    }
+
     /** ---------- RAW Access ---------- */
 
     async getRaw(key) {
@@ -137,6 +167,10 @@ class RedisService {
             logger.error(`Redis delete error for key "${key}":`, error);
             return false;
         }
+    }
+
+    async del(key) {
+        return await this.deleteKey(key);
     }
 
     async deletePattern(pattern) {

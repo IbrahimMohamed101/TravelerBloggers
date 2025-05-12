@@ -32,7 +32,7 @@ var _email_verification_tokens = require("./email_verification_tokens");
 var _password_reset_tokens = require("./password_reset_tokens");
 var _role_permissions = require("./role_permissions");
 var _refresh_tokens = require("./refresh_tokens");
-
+var _role = require("./roles");
 
 function initModels(sequelize) {
   var admin_logs = _admin_logs(sequelize, DataTypes);
@@ -66,6 +66,7 @@ function initModels(sequelize) {
   var password_reset_tokens = _password_reset_tokens(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
   var role_permissions = _role_permissions(sequelize, DataTypes);
+  var role = _role(sequelize, DataTypes);
   var refresh_tokens = _refresh_tokens(sequelize, DataTypes);
 
 
@@ -215,6 +216,7 @@ function initModels(sequelize) {
     password_reset_tokens,
     users,
     role_permissions,
+    role,
     refresh_tokens,
   };
 }

@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { UnauthorizedError, ConflictError } = require('../../errors/CustomErrors');
 const logger = require('../../utils/logger');
 

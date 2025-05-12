@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">46.36% </span>
+                <span class="strong">46.08% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/110</span>
+                <span class='fraction'>53/115</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.66% </span>
+                <span class="strong">47.32% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>51/107</span>
+                <span class='fraction'>53/112</span>
             </div>
         
             
@@ -252,7 +252,12 @@
 <a name='L187'></a><a href='#L187'>187</a>
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -343,13 +348,15 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -370,6 +377,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -377,6 +386,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -532,6 +542,7 @@ async function <span class="fstat-no" title="function not covered" >initializeRo
     const sessionRoutes = <span class="cstat-no" title="statement not covered" >require('./routes/auth/sessionRoutes')(container);</span>
     const tokenRoutes = <span class="cstat-no" title="statement not covered" >require('./routes/auth/tokenRoutes')(container);</span>
     const passwordRoutes = <span class="cstat-no" title="statement not covered" >require('./routes/auth/passwordRoutes')(container);</span>
+    const blogRoutes = <span class="cstat-no" title="statement not covered" >require('./routes/blog/blogRoutes')(container);</span>
 &nbsp;
     const router = <span class="cstat-no" title="statement not covered" >express.Router();</span>
 &nbsp;
@@ -544,6 +555,7 @@ async function <span class="fstat-no" title="function not covered" >initializeRo
 <span class="cstat-no" title="statement not covered" >    router.use('/sessions', sessionRoutes);</span>
 <span class="cstat-no" title="statement not covered" >    router.use('/auth', tokenRoutes);</span>
 <span class="cstat-no" title="statement not covered" >    router.use('/auth', passwordRoutes);</span>
+<span class="cstat-no" title="statement not covered" >    router.use('/blogs', blogRoutes);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    app.use('/api/v1', router);</span>
 &nbsp;
@@ -558,7 +570,9 @@ async function <span class="fstat-no" title="function not covered" >initializeRo
 let server;
 &nbsp;
 const initServicesModule = require('./container/initServices');
-const { initServices, initializePermissionServices } = initServicesModule;
+const { initServices } = initServicesModule;
+const { initializePermissions } = require('./services/permission/permissionService');
+const { initializeRolePermissions } = require('./services/permission/roleService');
 &nbsp;
 async function <span class="fstat-no" title="function not covered" >startServer(</span>) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
@@ -566,7 +580,8 @@ async function <span class="fstat-no" title="function not covered" >startServer(
         const services = <span class="cstat-no" title="statement not covered" >await initServices(models, sequelize);</span>
 &nbsp;
         // Initialize permissions and roles
-<span class="cstat-no" title="statement not covered" >        await initializePermissionServices();</span>
+<span class="cstat-no" title="statement not covered" >        await initializePermissions();</span>
+<span class="cstat-no" title="statement not covered" >        await initializeRolePermissions();</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        await initializeRoutes();</span>
 <span class="cstat-no" title="statement not covered" >        initializeSwagger();</span>
@@ -616,7 +631,7 @@ process.on('uncaughtException', <span class="fstat-no" title="function not cover
 // Test routes for integration testing
 <span class="missing-if-branch" title="else path not taken" >E</span>if (process.env.NODE_ENV === 'test') {
     const Joi = require('joi');
-    const { validateLogin, validate } = require('./middlewares/validate');
+    const { validateLogin, validate } = require('./validators/validate');
     const { sensitiveLimiter } = require('./middlewares/rateLimiter');
     app.post('/api/v1/auth/login', sensitiveLimiter, validateLogin, <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; <span class="cstat-no" title="statement not covered" >res.status(200).json({}))</span>;
     app.post('/api/v1/auth/refresh-token', validate(Joi.object({ refresh_token: Joi.string().required() })), <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; <span class="cstat-no" title="statement not covered" >res.status(200).json({}))</span>;
@@ -637,7 +652,7 @@ module.exports = app;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-05-01T00:21:20.932Z
+                at 2025-05-11T23:54:26.959Z
             </div>
         <script src="../prettify.js"></script>
         <script>

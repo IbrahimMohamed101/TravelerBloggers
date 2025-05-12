@@ -39,6 +39,12 @@ module.exports = function (sequelize, DataTypes) {
             otherKey: 'user_id',
             as: 'users'
         });
+        
+        // Role permissions
+        Permission.hasMany(models.role_permissions, {
+            foreignKey: 'permission_id',
+            as: 'rolePermissions'
+        });
     };
 
     return Permission;

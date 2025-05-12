@@ -20,7 +20,7 @@ const verifyJWT = (requiredRole = null) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             req.user = {
-                id: decoded.userId || decoded.id,
+                userId: decoded.userId || decoded.id,
                 email: decoded.email,
                 role: decoded.role,
                 sessionId: decoded.sessionId,
@@ -28,8 +28,8 @@ const verifyJWT = (requiredRole = null) => {
 
             if (requiredRole) {
                 const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
-                if (!roles.includes(req.user.role)) {
-                    logger.warn(`Access denied - role "${req.user.role}" not in [${roles}]`);
+                if (!req.user.role || !roles.includes(req.user.role)) {
+                    logger.warn(`Access denied - role "${req.user.role || 'undefined'}" not in [${roles}]`);
                     return res.status(403).json({ message: 'Insufficient permissions' });
                 }
             }

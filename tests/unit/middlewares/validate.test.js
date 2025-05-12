@@ -1,4 +1,4 @@
-const { validate, validateLogin, validateRegister } = require('../../../middlewares/validate');
+const { validate, validateLogin, validateRegister } = require('../../../validators/validate');
 
 describe('Validate Middleware', () => {
   test.todo('should reject invalid login payload');

@@ -1,6 +1,6 @@
 const express = require('express');
 const logger = require('../../utils/logger');
-const { validateChangePassword } = require('../../middlewares/validate');
+const { validateChangePassword } = require('../../validators/validate');
 const verifyJWT = require('../../middlewares/verifyJWT');
 
 const router = express.Router();

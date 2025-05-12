@@ -20,14 +20,18 @@ class ValidationError extends BaseError {
 }
 
 class UnauthorizedError extends BaseError {
-    constructor(message = 'Unauthorized') {
+    constructor(message = 'Unauthorized', code = 'UNAUTHORIZED', details = null) {
         super(message, 'UnauthorizedError', 401);
+        this.code = code;
+        this.details = details;
     }
 }
 
 class ForbiddenError extends BaseError {
-    constructor(message = 'Forbidden') {
+    constructor(message = 'Forbidden', code = 'FORBIDDEN', details = null) {
         super(message, 'ForbiddenError', 403);
+        this.code = code;
+        this.details = details;
     }
 }
 
@@ -43,6 +47,11 @@ class InternalServerError extends BaseError {
     }
 }
 
+class BadRequestError extends BaseError {
+    constructor(message = 'Bad Request') {
+        super(message, 'BadRequestError', 400);
+    }
+}
 
 module.exports = {
     BaseError,
@@ -51,5 +60,6 @@ module.exports = {
     UnauthorizedError,
     ForbiddenError,
     NotFoundError,
-    InternalServerError
+    InternalServerError,
+    BadRequestError
 };

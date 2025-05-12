@@ -4,14 +4,17 @@ const SessionService = require('../services/auth/sessionService');
 const OAuthService = require('../services/auth/oauthService');
 const AuthService = require('../services/auth/authService');
 const UserService = require('../services/user/userService');
-const PasswordService = require('../services/auth/passwordService');
-const emailService = require('../services/email/emailService');
+const PasswordService = require('../services/auth/PasswordService');
+const EmailService = require('../services/email/emailService');
+const EmailVerificationService = require('../services/auth/emailVerificationService');
+const BlogService = require('../services/blog/BlogService');
+const CategoryService = require('../services/blog/CategoryService');
+const TagService = require('../services/blog/TagService');
+const InteractionService = require('../services/blog/InteractionService');
+const { initializePermissions, getPermissions } = require('../services/permission/permissionService');
+const { initializeRolePermissions, getRolePermissions } = require('../services/permission/roleService');
 const logger = require('../utils/logger');
 const { enableAuditLog, useRedis } = require('./containerConfig');
-const EmailVerificationService = require('../services/auth/emailVerificationService');
-
-const { initializePermissions } = require('../services/permission/permissionService');
-const { initializeRolePermissions } = require('../services/permission/roleService');
 
 async function initServices(db, sequelize) {
     const services = {};
@@ -19,11 +22,14 @@ async function initServices(db, sequelize) {
     if (useRedis) {
         try {
             services.redisService = new RedisService();
+            await services.redisService.initialize();
             logger.info('Redis service initialized');
         } catch (err) {
             logger.warn('Redis init failed:', err);
-            services.redisService = null;
+            services.redisService = { enabled: false };
         }
+    } else {
+        services.redisService = { enabled: false };
     }
 
     if (enableAuditLog) {
@@ -41,29 +47,43 @@ async function initServices(db, sequelize) {
     services.sessionService = new SessionService(services.redisService, services.tokenService);
     services.oauthService = new OAuthService();
 
-    // Add role model to db for AuthService usage
-    if (!db.role) {
-        db.role = require('../models/role')(sequelize, sequelize.Sequelize.DataTypes);
-    }
-
     services.authService = new AuthService(
-        db, services.redisService, services.tokenService,
-        services.sessionService, services.oauthService, emailService, sequelize
+        db,
+        services.redisService,
+        services.tokenService,
+        services.sessionService,
+        services.oauthService,
+        EmailService,
+        sequelize
     );
 
     services.emailVerificationService = new EmailVerificationService(
-        db, services.tokenService, sequelize, emailService
+        db,
+        services.tokenService,
+        sequelize,
+        EmailService
     );
 
     services.userService = new UserService(db, services.redisService, services.tokenService);
     services.passwordService = new PasswordService(db, services.redisService, services.tokenService, sequelize);
 
+    // Initialize blog services
+    services.blogService = new BlogService(db, services.redisService);
+    services.categoryService = new CategoryService(db, services.redisService);
+    services.tagService = new TagService(db, services.redisService);
+    services.interactionService = new InteractionService(db, services.redisService);
+
+    // Initialize permissions and roles
+    try {
+        await initializePermissions(services.redisService);
+        await initializeRolePermissions(services.redisService);
+        logger.info('Permissions and roles initialized');
+    } catch (err) {
+        logger.error('Failed to initialize permissions and roles:', err);
+        throw err;
+    }
+
     return services;
 }
 
-async function initializePermissionServices() {
-    await initializePermissions();
-    await initializeRolePermissions();
-}
-
-module.exports = { initServices, initializePermissionServices };
+module.exports = { initServices };

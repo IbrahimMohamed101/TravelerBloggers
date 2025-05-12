@@ -66,6 +66,12 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true,
       comment: 'Estimated reading time in minutes'
     },
+    views: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      comment: 'Number of views'
+    },
     featured: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

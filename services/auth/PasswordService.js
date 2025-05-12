@@ -4,7 +4,7 @@ const {
     ValidationError,
     UnauthorizedError,
 } = require('../../errors/CustomErrors');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
 function timeoutPromise(promise, ms) {

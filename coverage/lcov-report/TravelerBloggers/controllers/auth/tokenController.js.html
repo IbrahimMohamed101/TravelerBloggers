@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.53% </span>
+                <span class="strong">10% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/26</span>
+                <span class='fraction'>3/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.53% </span>
+                <span class="strong">10% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/26</span>
+                <span class='fraction'>3/30</span>
             </div>
         
             
@@ -124,7 +124,19 @@
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,22 +147,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -161,8 +171,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -196,9 +220,15 @@ class TokenController {
     // POST /auth/refresh-token
 <span class="fstat-no" title="function not covered" >    as</span>ync refreshToken(req, res, next) {
 <span class="cstat-no" title="statement not covered" >        try {</span>
-            const { refreshToken } = <span class="cstat-no" title="statement not covered" >req.body;</span>
+            // Accept both camelCase and snake_case for refresh token
+            let refreshToken = <span class="cstat-no" title="statement not covered" >req.body.refreshToken || req.body.refresh_token;</span>
+            // Remove all whitespace and trim
+<span class="cstat-no" title="statement not covered" >            if (typeof refreshToken === 'string') {</span>
+<span class="cstat-no" title="statement not covered" >                refreshToken = refreshToken.replace(/\s/g, '').trim();</span>
+            }
+            // If still falsy after trimming, throw error
 <span class="cstat-no" title="statement not covered" >            if (!refreshToken) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new BadRequestError('Refresh token is required');</span>
+<span class="cstat-no" title="statement not covered" >                return res.status(400).json({ message: '"refresh_token" is required' });</span>
             }
             // Rotate refresh token: revoke old and issue new
             const tokenData = <span class="cstat-no" title="statement not covered" >await this.tokenService.refreshToken(refreshToken);</span>
@@ -210,11 +240,15 @@ class TokenController {
 <span class="cstat-no" title="statement not covered" >            await this.tokenService.db.refresh_tokens.create({</span>
                 token: newRefreshToken,
                 user_id: tokenData.userId,
-                revoked: false,
+                is_revoked: false,
                 expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
             });
 <span class="cstat-no" title="statement not covered" >            res.json({ token: tokenData.token, refreshToken: newRefreshToken });</span>
         } catch (error) {
+            // Always send error in the expected format for this endpoint
+<span class="cstat-no" title="statement not covered" >            if (error &amp;&amp; error.message === '"refresh_token" is required') {</span>
+<span class="cstat-no" title="statement not covered" >                return res.status(400).json({ message: '"refresh_token" is required' });</span>
+            }
 <span class="cstat-no" title="statement not covered" >            next(error);</span>
         }
     }
@@ -222,9 +256,11 @@ class TokenController {
     // POST /auth/revoke-token
 <span class="fstat-no" title="function not covered" >    as</span>ync revokeToken(req, res, next) {
 <span class="cstat-no" title="statement not covered" >        try {</span>
-            const { refreshToken } = <span class="cstat-no" title="statement not covered" >req.body;</span>
+            // Accept both camelCase and snake_case for refresh token
+            const refreshToken = <span class="cstat-no" title="statement not covered" >req.body.refreshToken || req.body.refresh_token;</span>
 <span class="cstat-no" title="statement not covered" >            if (!refreshToken) {</span>
-<span class="cstat-no" title="statement not covered" >                throw new BadRequestError('Refresh token is required');</span>
+                // Match error message format: "refresh_token" is required
+<span class="cstat-no" title="statement not covered" >                throw new BadRequestError('"refresh_token" is required');</span>
             }
 <span class="cstat-no" title="statement not covered" >            await this.tokenService.revokeToken(refreshToken);</span>
 <span class="cstat-no" title="statement not covered" >            res.json({ message: 'Refresh token revoked successfully' });</span>
@@ -253,7 +289,7 @@ module.exports = TokenController;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-05-01T00:21:20.932Z
+                at 2025-05-11T23:54:26.959Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

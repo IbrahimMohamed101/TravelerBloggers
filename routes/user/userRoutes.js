@@ -1,6 +1,6 @@
 const express = require('express');
 const verifyJWT = require('../../middlewares/verifyJWT');
-const { validateUpdateProfile, validatePasswordChange } = require('../../middlewares/validate');
+const { validateUpdateProfile, validatePasswordChange } = require('../../validators/validate');
 const upload = require('../../middlewares/multer');
 
 module.exports = function (container) {

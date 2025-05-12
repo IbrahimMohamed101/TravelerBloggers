@@ -2,7 +2,11 @@ const logger = require('../utils/logger');
 const statusMessages = require('../constants/httpStatusMessages');
 
 module.exports = (err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
+    // Ensure we have a valid status code (must be a number between 100-599)
+    let statusCode = err.statusCode || 500;
+    if (!statusCode || statusCode < 100 || statusCode > 599) {
+        statusCode = 500; // Default to 500 if invalid
+    }
 
     const response = {
         status: 'error',

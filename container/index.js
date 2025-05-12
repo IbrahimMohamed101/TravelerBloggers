@@ -7,6 +7,7 @@ class Container {
     constructor() {
         this.services = {};
         this.controllers = {};
+        this.db = null;
         this.isInitialized = false;
     }
 
@@ -16,6 +17,7 @@ class Container {
         try {
             const { db, sequelize } = await initDB();
             this.db = db;
+            this.sequelize = sequelize;
 
             this.services = await initServices(db, sequelize);
             this.controllers = initControllers(this.services);
@@ -40,6 +42,20 @@ class Container {
         const controller = this.controllers[name];
         if (!controller) throw new Error(`Controller '${name}' not found`);
         return controller;
+    }
+
+    getDb() {
+        if (!this.isInitialized) throw new Error('Container not initialized');
+        return this.db;
+    }
+
+    getSequelize() {
+        if (!this.isInitialized) throw new Error('Container not initialized');
+        return this.sequelize;
+    }
+
+    getLogger() {
+        return logger;
     }
 }
 

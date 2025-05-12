@@ -58,6 +58,10 @@ app.use(passport.session());
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 
+// Attach container to request object
+const containerMiddleware = require('./middlewares/containerMiddleware');
+app.use(containerMiddleware);
+
 // Passport strategies
 require('./strategy/discord-startegy');
 require('./strategy/google-strategy')(passport);
@@ -89,6 +93,7 @@ async function initializeRoutes() {
     const sessionRoutes = require('./routes/auth/sessionRoutes')(container);
     const tokenRoutes = require('./routes/auth/tokenRoutes')(container);
     const passwordRoutes = require('./routes/auth/passwordRoutes')(container);
+    const blogRoutes = require('./routes/blog/blogRoutes')(container);
 
     const router = express.Router();
 
@@ -101,6 +106,7 @@ async function initializeRoutes() {
     router.use('/sessions', sessionRoutes);
     router.use('/auth', tokenRoutes);
     router.use('/auth', passwordRoutes);
+    router.use('/blogs', blogRoutes);
 
     app.use('/api/v1', router);
 
@@ -115,7 +121,9 @@ async function initializeRoutes() {
 let server;
 
 const initServicesModule = require('./container/initServices');
-const { initServices, initializePermissionServices } = initServicesModule;
+const { initServices } = initServicesModule;
+const { initializePermissions } = require('./services/permission/permissionService');
+const { initializeRolePermissions } = require('./services/permission/roleService');
 
 async function startServer() {
     try {
@@ -123,7 +131,8 @@ async function startServer() {
         const services = await initServices(models, sequelize);
 
         // Initialize permissions and roles
-        await initializePermissionServices();
+        await initializePermissions();
+        await initializeRolePermissions();
 
         await initializeRoutes();
         initializeSwagger();
@@ -173,7 +182,7 @@ process.on('uncaughtException', error => {
 // Test routes for integration testing
 if (process.env.NODE_ENV === 'test') {
     const Joi = require('joi');
-    const { validateLogin, validate } = require('./middlewares/validate');
+    const { validateLogin, validate } = require('./validators/validate');
     const { sensitiveLimiter } = require('./middlewares/rateLimiter');
     app.post('/api/v1/auth/login', sensitiveLimiter, validateLogin, (req, res) => res.status(200).json({}));
     app.post('/api/v1/auth/refresh-token', validate(Joi.object({ refresh_token: Joi.string().required() })), (req, res) => res.status(200).json({}));

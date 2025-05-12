@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { sensitiveLimiter } = require('../../middlewares/rateLimiter');
-const { validateRegister, validate } = require('../../middlewares/validate');
+const { validateRegister, validate } = require('../../validators/validate');
 const Joi = require('joi');
 
 module.exports = (container) => {
