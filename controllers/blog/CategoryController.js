@@ -1,16 +1,27 @@
+const CategoryService = require('../../services/blog/CategoryService');
+const { ValidationError } = require('../../errors/CustomErrors');
+
 class CategoryController {
-    constructor(categoryService) {
-        this.categoryService = categoryService;
+    constructor(db, redisService) {
+        this.categoryService = new CategoryService(db, redisService);
     }
 
-    async createCategory(req, res) {
+    async createCategory(req, res, next) {
         try {
+            if (!req.user || !req.user.role) {
+                throw new ValidationError('User role is required');
+            }
+
             const categoryData = req.body;
+            if (!categoryData || !categoryData.name) {
+                throw new ValidationError('Category name is required');
+            }
+
             const userRole = req.user.role;
             const category = await this.categoryService.createCategory(categoryData, userRole);
             res.status(201).json(category);
         } catch (error) {
-            throw error;
+            next(error);
         }
     }
 

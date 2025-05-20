@@ -1,7 +1,8 @@
 const express = require('express');
 const { check } = require('express-validator');
-const CategoryController = require('../controllers/CategoryController');
-const authMiddleware = require('../middleware/authMiddleware');
+const CategoryController = require('../../controllers/blog/CategoryController');
+const verifyJWT = require('../../middlewares/verifyJWT');
+const validateRequest = require('../../middlewares/validateRequest');
 
 const router = express.Router();
 
@@ -10,10 +11,13 @@ module.exports = (db, redisService) => {
 
     router.post(
         '/',
-        authMiddleware,
+        verifyJWT(),
         [
-            check('name').isString().isLength({ min: 3 }).withMessage('Name must be at least 3 characters')
+            check('name').notEmpty().withMessage('Name is required')
+                .isString().withMessage('Name must be a string')
+                .isLength({ min: 3 }).withMessage('Name must be at least 3 characters long'),
         ],
+        validateRequest,
         categoryController.createCategory.bind(categoryController)
     );
 
@@ -33,7 +37,7 @@ module.exports = (db, redisService) => {
 
     router.put(
         '/:categoryId',
-        authMiddleware,
+        verifyJWT(),
         [
             check('name').optional().isString().isLength({ min: 3 }).withMessage('Name must be at least 3 characters')
         ],
@@ -42,7 +46,7 @@ module.exports = (db, redisService) => {
 
     router.delete(
         '/:categoryId',
-        authMiddleware,
+        verifyJWT(),
         categoryController.deleteCategory.bind(categoryController)
     );
 

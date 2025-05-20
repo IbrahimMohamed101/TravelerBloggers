@@ -12,7 +12,7 @@ class CategoryService {
         this.Category = db.categories;
         this.BlogCategoryMapping = db.blog_categories;
         this.CACHE_TTL = 3600; // 1 hour
-    }
+    } 
 
     /**
      * Creates a new category with permission check

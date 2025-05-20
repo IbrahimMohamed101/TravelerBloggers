@@ -7,9 +7,13 @@ module.exports = function (sequelize, DataTypes) {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        role: {
-            type: DataTypes.STRING(50),
-            allowNull: false
+        role_id: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: 'roles',
+                key: 'id'
+            }
         },
         permission_id: {
             type: DataTypes.UUID,
@@ -24,25 +28,24 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'role_permissions',
         schema: 'public',
         timestamps: true,
-        underscored: false,
-        indexes: [
-            {
-                name: 'role_permissions_pkey',
-                unique: true,
-                fields: [{ name: 'id' }]
-            },
-            {
-                name: 'role_permissions_role_permission_id_key',
-                unique: true,
-                fields: ['role', 'permission_id']
-            }
-        ]
+        freezeTableName: true,
+        underscored: false
     });
+
+    // تحديد بشكل صريح جدًا أن هذا النموذج ليس لديه عمود 'role'
+    RolePermissions.removeAttribute('role');
 
     RolePermissions.associate = function (models) {
         RolePermissions.belongsTo(models.permissions, {
             foreignKey: 'permission_id',
+            targetKey: 'id',
             as: 'permission'
+        });
+        
+        RolePermissions.belongsTo(models.roles, {
+            foreignKey: 'role_id',
+            targetKey: 'id',
+            as: 'role'
         });
     };
 

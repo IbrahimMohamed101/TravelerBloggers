@@ -84,7 +84,7 @@ module.exports = function(sequelize, DataTypes) {
 
     // Relationship with locations
     TravelPlan.hasMany(models.travel_plan_locations, {
-      as: 'locations',
+      as: 'planLocations',
       foreignKey: 'travel_plan_id'
     });
 

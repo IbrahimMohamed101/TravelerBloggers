@@ -85,15 +85,13 @@ function initializeSwagger() {
 
 // App Routes
 async function initializeRoutes() {
-    await container.initialize();
-    logger.info('Container initialized successfully');
-
     const authRoutes = require('./routes/auth')(container);
     const userRoutes = require('./routes/user/userRoutes')(container);
     const sessionRoutes = require('./routes/auth/sessionRoutes')(container);
     const tokenRoutes = require('./routes/auth/tokenRoutes')(container);
     const passwordRoutes = require('./routes/auth/passwordRoutes')(container);
-    const blogRoutes = require('./routes/blog/blogRoutes')(container);
+    const blogRoutes = require('./routes/blog/index')(container);
+    const adminRoutes = require('./routes/admin/rolePermissionRoutes')(container);
 
     const router = express.Router();
 
@@ -107,6 +105,7 @@ async function initializeRoutes() {
     router.use('/auth', tokenRoutes);
     router.use('/auth', passwordRoutes);
     router.use('/blogs', blogRoutes);
+    router.use('/admin', adminRoutes);
 
     app.use('/api/v1', router);
 
@@ -127,13 +126,11 @@ const { initializeRolePermissions } = require('./services/permission/roleService
 
 async function startServer() {
     try {
-        // Initialize other services if needed
-        const services = await initServices(models, sequelize);
+        // Initialize container first
+        await container.initialize();
+        logger.info('Container initialized successfully');
 
-        // Initialize permissions and roles
-        await initializePermissions();
-        await initializeRolePermissions();
-
+        // Initialize routes (which will use the container's services)
         await initializeRoutes();
         initializeSwagger();
         app.use(errorHandler);

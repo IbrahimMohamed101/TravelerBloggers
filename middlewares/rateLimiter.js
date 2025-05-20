@@ -16,7 +16,7 @@ const globalLimiter = rateLimit({
 // Strict limiter for sensitive endpoints
 const sensitiveLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Very strict limit for sensitive operations
+    max: 50, // Very strict limit for sensitive operations
     handler: (req, res) => {
         logger.warn(`Sensitive endpoint rate limit exceeded for IP: ${req.ip}`);
         res.status(429).json({

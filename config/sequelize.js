@@ -13,4 +13,9 @@ const sequelize = new Sequelize(
     }
 );
 
+// تكوين إضافي لإصلاح مشكلات مع النماذج
+sequelize.options.define = sequelize.options.define || {};
+sequelize.options.define.syncOnAssociation = false;
+sequelize.options.define.freezeTableName = true;
+
 module.exports = sequelize;

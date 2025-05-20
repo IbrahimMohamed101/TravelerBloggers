@@ -1,6 +1,5 @@
 const logger = require('../utils/logger');
 const { UnauthorizedError, ForbiddenError, InternalServerError } = require('../errors/CustomErrors');
-const { getRolePermissions } = require('../services/permission/roleService');
 
 module.exports = (options = {}) => {
     const { requiredPermission, ownershipCheck, allowSuperAdmin = true } = options;
@@ -19,6 +18,15 @@ module.exports = (options = {}) => {
 
             const userId = req.user.userId;
             const redisService = req.container.getService('redisService');
+            const roleService = req.container.getService('roleService');
+
+            if (!roleService) {
+                logger.error('RoleService missing in request container.', {
+                    path: req.path,
+                    userId
+                });
+                throw new InternalServerError('Internal server error');
+            }
 
             // 2. Load user data from Redis or Database
             let user;
@@ -45,25 +53,12 @@ module.exports = (options = {}) => {
                     });
                     throw new InternalServerError('Internal server error');
                 }
-                // Try fallback: use 'role' if 'roles' is missing but 'role' exists
-                if (!db.role && db.role) {
-                    // Only assign once without logging repeatedly
-                    if (!db._rolesFallbackUsed) {
-                        logger.warn("db.roles not found, using db.role instead.", {
-                            path: req.path,
-                            userId,
-                            dbKeys: Object.keys(db)
-                        });
-                        db._rolesFallbackUsed = true;
-                    }
-                    db.role = db.role;
-                }
-                if (!db.role) {
-                    logger.error('db.role model missing in request container.', {
+                if (!db.roles) {
+                    logger.error('db.roles model missing in request container.', {
                         path: req.path,
                         userId,
                         dbKeys: Object.keys(db),
-                        hint: "Did you mean 'role' instead of 'roles'? Available keys: " + Object.keys(db).join(', ')
+                        hint: "Available keys: " + Object.keys(db).join(', ')
                     });
                     throw new InternalServerError('Internal server error');
                 }
@@ -94,25 +89,16 @@ module.exports = (options = {}) => {
 
             // Get the role name from the role_id
             const db = req.container.getDb();
-            // Try fallback: use 'role' if 'roles' is missing but 'role' exists
-            if (!db.role && db.role) {
-                logger.warn("db.roles not found, using db.role instead.", {
-                    path: req.path,
-                    userId,
-                    dbKeys: Object.keys(db)
-                });
-                db.role = db.role;
-            }
-            if (!db.role) {
-                logger.error('db.role model missing in request container (roles lookup).', {
+            if (!db.roles) {
+                logger.error('db.roles model missing in request container (roles lookup).', {
                     path: req.path,
                     userId,
                     dbKeys: Object.keys(db),
-                    hint: "Did you mean 'role' instead of 'roles'? Available keys: " + Object.keys(db).join(', ')
+                    hint: "Available keys: " + Object.keys(db).join(', ')
                 });
                 throw new InternalServerError('Internal server error');
             }
-            const userRole = await db.role.findByPk(user.role_id, {
+            const userRole = await db.roles.findByPk(user.role_id, {
                 attributes: ['name']
             });
             const roleName = userRole ? userRole.name : 'user';
@@ -120,7 +106,7 @@ module.exports = (options = {}) => {
             if (allowSuperAdmin && roleName === 'super_admin') {
                 hasPermission = true;
             } else if (requiredPermission) {
-                const userPermissions = await getRolePermissions(roleName, redisService);
+                const userPermissions = await roleService.getRolePermissions(roleName);
                 hasPermission = userPermissions.includes(requiredPermission);
             }
 

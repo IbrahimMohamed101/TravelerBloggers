@@ -11,12 +11,12 @@ const BlogService = require('../services/blog/BlogService');
 const CategoryService = require('../services/blog/CategoryService');
 const TagService = require('../services/blog/TagService');
 const InteractionService = require('../services/blog/InteractionService');
-const { initializePermissions, getPermissions } = require('../services/permission/permissionService');
-const { initializeRolePermissions, getRolePermissions } = require('../services/permission/roleService');
+const RoleService = require('../services/permission/roleService');
+const PermissionService = require('../services/permission/permissionService');
 const logger = require('../utils/logger');
 const { enableAuditLog, useRedis } = require('./containerConfig');
 
-async function initServices(db, sequelize) {
+async function initServices(db, sequelize, container) {
     const services = {};
 
     if (useRedis) {
@@ -73,10 +73,19 @@ async function initServices(db, sequelize) {
     services.tagService = new TagService(db, services.redisService);
     services.interactionService = new InteractionService(db, services.redisService);
 
+    // Initialize permission services
+    services.roleService = new RoleService(db, services.redisService);
+    services.permissionService = new PermissionService(db, services.redisService);
+
+    // Set audit service for role service if available
+    if (services.auditLogService) {
+        services.roleService.setAuditService(services.auditLogService);
+    }
+
     // Initialize permissions and roles
     try {
-        await initializePermissions(services.redisService);
-        await initializeRolePermissions(services.redisService);
+        await services.permissionService.initializePermissions();
+        await services.roleService.initializeRolePermissions();
         logger.info('Permissions and roles initialized');
     } catch (err) {
         logger.error('Failed to initialize permissions and roles:', err);
