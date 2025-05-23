@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>خريطة ذهنية - كورس Microservices</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      direction: rtl;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #0066cc;
+    }
+    .week {
+      background: #ffffff;
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .day {
+      margin-bottom: 10px;
+    }
+    .day strong {
+      color: #009688;
+    }
+    ul {
+      margin-top: 5px;
+      padding-right: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>خريطة ذهنية - كورس Microservices في أسبوعين (بدون React)</h1>
+
+  <div class="week">
+    <h2>الأسبوع الأول: بناء الخدمات وربطها</h2>
+
+    <div class="day">
+      <strong>اليوم 1: الإعداد العام</strong>
+      <ul>
+        <li>فهم Docker و Kubernetes</li>
+        <li>إعداد dev environment</li>
+        <li>كتابة السكريبتات وتشغيل أول خدمة</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 2: Auth Service</strong>
+      <ul>
+        <li>Sign Up / Sign In</li>
+        <li>JWT Token + Middleware</li>
+        <li>Validations</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 3: Ticket Service</strong>
+      <ul>
+        <li>إنشاء التذاكر + CRUD API</li>
+        <li>Validations + Input checks</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 4: Event Bus + NATS</strong>
+      <ul>
+        <li>تنصيب وتشغيل NATS</li>
+        <li>تجربة إرسال واستقبال الأحداث</li>
+        <li>توحيد هيكل الأحداث</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 5: Orders Service</strong>
+      <ul>
+        <li>إنشاء الطلبات + ربطها بالتذاكر</li>
+        <li>التعامل مع الأحداث القادمة من التذاكر</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 6: Payments Service</strong>
+      <ul>
+        <li>Stripe Integration</li>
+        <li>استلام الدفع + تأكيده</li>
+        <li>إرسال Events لتأكيد الطلب</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 7: Refactor + Testing</strong>
+      <ul>
+        <li>تنظيف الكود وإعادة تنظيم الملفات</li>
+        <li>كتابة Unit Tests للخدمات</li>
+        <li>اختبار كل جزء على حدة</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="week">
+    <h2>الأسبوع الثاني: التوسيع والنشر</h2>
+
+    <div class="day">
+      <strong>اليوم 8: التعامل مع الأخطاء + Logging</strong>
+      <ul>
+        <li>Handling errors across services</li>
+        <li>Custom error classes</li>
+        <li>Logging الأحداث المهمة</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 9: الحماية والصلاحيات</strong>
+      <ul>
+        <li>Role-based access</li>
+        <li>تأكيد الهوية من خلال JWT</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 10: نشر الخدمات - Kubernetes</strong>
+      <ul>
+        <li>تهيئة الملفات: Deployment + Service</li>
+        <li>إعداد Ingress + Skaffold</li>
+        <li>تشغيل كامل على Minikube</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 11: إضافة TLS + HTTPS</strong>
+      <ul>
+        <li>تأمين الاتصال الخارجي</li>
+        <li>إعداد TLS certificates</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 12: مراجعة الأحداث المشتركة</strong>
+      <ul>
+        <li>توحيد الأحداث Event Contracts</li>
+        <li>تنظيم ملفات الـ listeners والـ publishers</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 13: مراجعة شاملة</strong>
+      <ul>
+        <li>مراجعة كل الخدمات وربطها</li>
+        <li>اختبار السيناريوهات الأساسية</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <strong>اليوم 14: مشروعك الخاص</strong>
+      <ul>
+        <li>اختر فكرة مشروع بسيط (مثلاً: حجوزات، شحن، اشتراكات)</li>
+        <li>طبق فيه Auth + 2 Services على الأقل</li>
+        <li>استخدم NATS و K8s</li>
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>

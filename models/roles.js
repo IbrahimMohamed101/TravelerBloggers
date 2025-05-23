@@ -91,7 +91,7 @@ module.exports = function (sequelize, DataTypes) {
         // Role permissions through role_permissions
         Roles.belongsToMany(models.permissions, {
             through: 'role_permissions',
-            foreignKey: 'role',
+            foreignKey: 'role_id',
             otherKey: 'permission_id',
             as: 'permissions'
         });

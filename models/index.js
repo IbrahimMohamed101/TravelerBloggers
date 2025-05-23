@@ -12,4 +12,7 @@ const sequelize = new Sequelize({
 
 const models = initModels(sequelize); // استدعاء الدالة بشكل صحيح
 
-module.exports = models;  // تصدير الموديلات
+module.exports = {
+    ...models,
+    sequelize
+};  // تصدير الموديلات و sequelize

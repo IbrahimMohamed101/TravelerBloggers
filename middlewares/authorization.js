@@ -101,7 +101,10 @@ module.exports = (options = {}) => {
             const userRole = await db.roles.findByPk(user.role_id, {
                 attributes: ['name']
             });
-            const roleName = userRole ? userRole.name : 'user';
+            let roleName = userRole ? userRole.name : 'user';
+
+            // Normalize roleName to lowercase to avoid case sensitivity issues
+            roleName = roleName.toLowerCase();
 
             if (allowSuperAdmin && roleName === 'super_admin') {
                 hasPermission = true;

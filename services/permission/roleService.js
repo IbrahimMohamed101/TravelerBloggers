@@ -3,9 +3,11 @@ const { DEFAULT_ROLES } = require('../../constants/permissions');
 const { NotFoundError, ConflictError, ForbiddenError } = require('../../errors/CustomErrors');
 const sequelize = require('../../config/sequelize');
 
+const models = require('../../models');
+
 class RoleService {
     constructor(db, redisService) {
-        this.db = db;
+        this.db = db || models;
         this.redisService = redisService;
         this.auditService = null; // Will be set later when audit service is available
     }
@@ -69,12 +71,12 @@ class RoleService {
      */
     async initializeRoles() {
         try {
-            const transaction = await this.db.transaction();
+            const transaction = await this.db.sequelize.transaction();
 
             try {
                 // إنشاء الأدوار الافتراضية
                 for (const role of Object.values(DEFAULT_ROLES)) {
-                    const [createdRole, created] = await this.db.role.findOrCreate({
+                    const [createdRole, created] = await this.db.roles.findOrCreate({
                         where: { name: role.name },
                         defaults: {
                             name: role.name,
@@ -89,7 +91,7 @@ class RoleService {
 
                     // إنشاء الصلاحيات المرتبطة بالدور
                     for (const permissionName of role.permissions) {
-                        const [permission, created] = await this.db.permission.findOrCreate({
+                        const [permission, created] = await this.db.permissions.findOrCreate({
                             where: { name: permissionName },
                             defaults: { name: permissionName },
                             transaction
@@ -100,7 +102,7 @@ class RoleService {
                         }
 
                         // ربط الصلاحية بالدور
-                        await this.db.rolePermission.findOrCreate({
+                        await this.db.rolePermissions.findOrCreate({
                             where: {
                                 role_id: createdRole.id,
                                 permission_id: permission.id
@@ -131,12 +133,13 @@ class RoleService {
      */
     async getAllRoles() {
         try {
-            const roles = await this.db.role.findAll({
+            const roles = await this.db.roles.findAll({
                 include: [{
-                    model: this.db.permission,
+                    model: this.db.permissions,
+                    as: 'permissions',
                     through: { attributes: [] }
                 }],
-                order: [['created_at', 'DESC']]
+                order: [['createdAt', 'DESC']]
             });
 
             return roles.map(role => ({
@@ -144,8 +147,8 @@ class RoleService {
                 name: role.name,
                 description: role.description,
                 permissions: role.permissions.map(p => p.name),
-                created_at: role.created_at,
-                updated_at: role.updated_at
+                created_at: role.createdAt,
+                updated_at: role.updatedAt
             }));
         } catch (error) {
             logger.error(`Error getting roles: ${error.message}`);
@@ -158,9 +161,10 @@ class RoleService {
      */
     async getRole(roleId) {
         try {
-            const role = await this.db.role.findByPk(roleId, {
+            const role = await this.db.roles.findByPk(roleId, {
                 include: [{
-                    model: this.db.permission,
+                    model: this.db.permissions,
+                    as: 'permissions',
                     through: { attributes: [] }
                 }]
             });
@@ -174,8 +178,8 @@ class RoleService {
                 name: role.name,
                 description: role.description,
                 permissions: role.permissions.map(p => p.name),
-                created_at: role.created_at,
-                updated_at: role.updated_at
+                created_at: role.createdAt,
+                updated_at: role.updatedAt
             };
         } catch (error) {
             logger.error(`Error getting role: ${error.message}`);
@@ -187,11 +191,11 @@ class RoleService {
      * إنشاء دور جديد
      */
     async createRole(roleData, adminId) {
-        const transaction = await this.db.transaction();
+        const transaction = await this.db.sequelize.transaction();
 
         try {
             // التحقق من عدم وجود دور بنفس الاسم
-            const existingRole = await this.db.role.findOne({
+            const existingRole = await this.db.roles.findOne({
                 where: { name: roleData.name },
                 transaction
             });
@@ -201,7 +205,7 @@ class RoleService {
             }
 
             // إنشاء الدور
-            const role = await this.db.role.create({
+            const role = await this.db.roles.create({
                 name: roleData.name,
                 description: roleData.description
             }, { transaction });
@@ -209,13 +213,13 @@ class RoleService {
             // إضافة الصلاحيات للدور
             if (roleData.permissions && roleData.permissions.length > 0) {
                 for (const permissionName of roleData.permissions) {
-                    const [permission] = await this.db.permission.findOrCreate({
+                    const [permission] = await this.db.permissions.findOrCreate({
                         where: { name: permissionName },
                         defaults: { name: permissionName },
                         transaction
                     });
 
-                        await this.db.rolePermission.create({
+                        await this.db.rolePermissions.create({
                             role: role.name,
                             permission_id: permission.id
                         }, { transaction });
@@ -243,10 +247,10 @@ class RoleService {
      * تحديث دور موجود
      */
     async updateRole(roleId, roleData, adminId) {
-        const transaction = await this.db.transaction();
+        const transaction = await this.db.sequelize.transaction();
 
         try {
-            const role = await this.db.role.findByPk(roleId, { transaction });
+            const role = await this.db.roles.findByPk(roleId, { transaction });
 
             if (!role) {
                 throw new NotFoundError('الدور غير موجود');
@@ -259,7 +263,7 @@ class RoleService {
 
             // التحقق من عدم وجود دور آخر بنفس الاسم
             if (roleData.name && roleData.name !== role.name) {
-                const existingRole = await this.db.role.findOne({
+                const existingRole = await this.db.roles.findOne({
                     where: { name: roleData.name },
                     transaction
                 });
@@ -278,20 +282,20 @@ class RoleService {
             // تحديث الصلاحيات
             if (roleData.permissions) {
                 // حذف الصلاحيات القديمة
-                await this.db.rolePermission.destroy({
+                await this.db.rolePermissions.destroy({
                     where: { role_id: role.id },
                     transaction
                 });
 
                 // إضافة الصلاحيات الجديدة
                 for (const permissionName of roleData.permissions) {
-                    const [permission] = await this.db.permission.findOrCreate({
+                    const [permission] = await this.db.permissions.findOrCreate({
                         where: { name: permissionName },
                         defaults: { name: permissionName },
                         transaction
                     });
 
-                await this.db.rolePermission.create({
+                await this.db.rolePermissions.create({
                     role: role.name,
                     permission_id: permission.id
                 }, { transaction });
@@ -320,10 +324,10 @@ class RoleService {
      * حذف دور
      */
     async deleteRole(roleId, adminId) {
-        const transaction = await this.db.transaction();
+        const transaction = await this.db.sequelize.transaction();
 
         try {
-            const role = await this.db.role.findByPk(roleId, { transaction });
+            const role = await this.db.roles.findByPk(roleId, { transaction });
 
             if (!role) {
                 throw new NotFoundError('الدور غير موجود');
@@ -345,7 +349,7 @@ class RoleService {
             }
 
             // حذف الصلاحيات المرتبطة بالدور
-            await this.db.rolePermission.destroy({
+            await this.db.rolePermissions.destroy({
                 where: { role_id: role.id },
                 transaction
             });
@@ -425,10 +429,11 @@ class RoleService {
      */
     async checkRolePermission(roleName, permissionName) {
         try {
-            const role = await this.db.role.findOne({
+            const role = await this.db.roles.findOne({
                 where: { name: roleName },
                 include: [{
-                    model: this.db.permission,
+                    model: this.db.permissions,
+                    as: 'permissions',
                     where: { name: permissionName },
                     through: { attributes: [] }
                 }]
