@@ -43,12 +43,10 @@ class RoleService {
                     
                     if (permission) {
                         try {
-                            // استخدام استعلام مباشر بدلاً من النموذج
-                            await this.db.sequelize.query(`
-                                INSERT INTO "public"."role_permissions" (id, role_id, permission_id, "createdAt", "updatedAt")
-                                VALUES (uuid_generate_v4(), '${roleInstance.id}', '${permission.id}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                                ON CONFLICT (role_id, permission_id) DO NOTHING;
-                            `);
+                            // Add the permission to the role
+                            await roleInstance.addPermission(permission, {
+                                through: this.db.rolePermissions
+                            });
                             logger.info(`Associated role ${roleData.name} with permission ${permissionName}`);
                         } catch (error) {
                             logger.error(`Error associating role ${roleData.name} with permission ${permissionName}: ${error.message}`);

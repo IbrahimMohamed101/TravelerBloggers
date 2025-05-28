@@ -3,14 +3,54 @@ const { sequelize } = require('../../config/sequelize');
 const models = require('../../models');
 const { NotFoundError, ValidationError } = require('../../errors/CustomErrors');
 
-// Sample permissions to initialize
+// Initialize all required permissions
 const permissions = [
-    { name: 'create_blog', description: 'Create new blogs' },
-    { name: 'edit_blog', description: 'Edit existing blogs' },
-    { name: 'delete_blog', description: 'Delete blogs' },
-    { name: 'manage_users', description: 'Manage user accounts' },
-    { name: 'moderate_content', description: 'Moderate blogs and content' },
-    { name: 'manage_categories', description: 'Manage categories' }
+    // User Management
+    { name: 'view_users', description: 'View user list and details', group: 'users', action: 'read', resource: 'users' },
+    { name: 'create_user', description: 'Create new users', group: 'users', action: 'create', resource: 'users' },
+    { name: 'edit_user', description: 'Edit user details', group: 'users', action: 'update', resource: 'users' },
+    { name: 'delete_user', description: 'Delete users', group: 'users', action: 'delete', resource: 'users' },
+    { name: 'manage_user_roles', description: 'Assign/remove user roles', group: 'users', action: 'manage', resource: 'user_roles' },
+    { name: 'manage_user_status', description: 'Activate/deactivate users', group: 'users', action: 'manage', resource: 'user_status' },
+
+    // Content Management
+    { name: 'view_content', description: 'View all content', group: 'content', action: 'read', resource: 'content' },
+    { name: 'create_content', description: 'Create new content', group: 'content', action: 'create', resource: 'content' },
+    { name: 'edit_content', description: 'Edit existing content', group: 'content', action: 'update', resource: 'content' },
+    { name: 'delete_content', description: 'Delete content', group: 'content', action: 'delete', resource: 'content' },
+    { name: 'approve_content', description: 'Approve content for publication', group: 'content', action: 'approve', resource: 'content' },
+    { name: 'reject_content', description: 'Reject content', group: 'content', action: 'reject', resource: 'content' },
+    { name: 'manage_categories', description: 'Manage content categories', group: 'content', action: 'manage', resource: 'categories' },
+    { name: 'manage_tags', description: 'Manage content tags', group: 'content', action: 'manage', resource: 'tags' },
+
+    // System Management
+    { name: 'view_system_settings', description: 'View system settings', group: 'system', action: 'read', resource: 'system_settings' },
+    { name: 'update_system_settings', description: 'Update system settings', group: 'system', action: 'update', resource: 'system_settings' },
+    { name: 'manage_roles', description: 'Manage user roles', group: 'system', action: 'manage', resource: 'roles' },
+    { name: 'manage_permissions', description: 'Manage role permissions', group: 'system', action: 'manage', resource: 'permissions' },
+    { name: 'view_audit_logs', description: 'View system audit logs', group: 'system', action: 'read', resource: 'audit_logs' },
+    { name: 'manage_backups', description: 'Manage system backups', group: 'system', action: 'manage', resource: 'backups' },
+    { name: 'manage_maintenance', description: 'Manage maintenance mode', group: 'system', action: 'manage', resource: 'maintenance' },
+
+    // Admin Management
+    { name: 'view_admins', description: 'View admin list', group: 'admin', action: 'read', resource: 'admins' },
+    { name: 'create_admin', description: 'Create new admins', group: 'admin', action: 'create', resource: 'admins' },
+    { name: 'edit_admin', description: 'Edit admin details', group: 'admin', action: 'update', resource: 'admins' },
+    { name: 'delete_admin', description: 'Delete admins', group: 'admin', action: 'delete', resource: 'admins' },
+    { name: 'manage_admin_roles', description: 'Manage admin roles', group: 'admin', action: 'manage', resource: 'admin_roles' },
+    { name: 'manage_admin_permissions', description: 'Manage admin permissions', group: 'admin', action: 'manage', resource: 'admin_permissions' },
+
+    // Reports and Analytics
+    { name: 'view_reports', description: 'View system reports', group: 'reports', action: 'read', resource: 'reports' },
+    { name: 'generate_reports', description: 'Generate new reports', group: 'reports', action: 'create', resource: 'reports' },
+    { name: 'export_reports', description: 'Export system reports', group: 'reports', action: 'export', resource: 'reports' },
+    { name: 'view_analytics', description: 'View system analytics', group: 'reports', action: 'read', resource: 'analytics' },
+
+    // Blog specific
+    { name: 'create_blog', description: 'Create new blogs', group: 'blogs', action: 'create', resource: 'blogs' },
+    { name: 'edit_blog', description: 'Edit existing blogs', group: 'blogs', action: 'update', resource: 'blogs' },
+    { name: 'delete_blog', description: 'Delete blogs', group: 'blogs', action: 'delete', resource: 'blogs' },
+    { name: 'moderate_content', description: 'Moderate user content', group: 'content', action: 'moderate', resource: 'content' }
 ];
 
 /**

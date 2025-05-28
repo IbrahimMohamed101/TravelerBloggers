@@ -2,20 +2,39 @@ const logger = require('../../utils/logger');
 const { ValidationError } = require('../../errors/CustomErrors');
 
 class AdminController {
-    constructor(container) {
-        this.container = container;
-        this.adminService = container.getService('adminService');
+    constructor({ adminService, logger }) {
+        this.adminService = adminService;
+        this.logger = logger;
     }
 
     /**
-     * إنشاء مشرف جديد
+     * Get all users
      */
-    createAdmin = async (req, res) => {
+    async getUsers(req, res) {
+        try {
+            const { page = 1, limit = 10, search = '', role, status } = req.query;
+            const users = await this.adminService.getUsers({ page, limit, search, role, status });
+            res.json({
+                success: true,
+                data: users
+            });
+        } catch (error) {
+            this.logger.error(`Error in getUsers controller: ${error.message}`);
+            res.status(error.statusCode || 500).json({
+                success: false,
+                message: error.message,
+                code: error.code
+            });
+        }
+    }/**
+     * Create a new admin
+     */
+    async createAdmin(req, res) {
         try {
             const admin = await this.adminService.createAdmin(req.body, req.admin);
             res.status(201).json({
                 success: true,
-                message: 'تم إنشاء المشرف بنجاح',
+                message: 'Administrator created successfully',
                 data: admin
             });
         } catch (error) {
@@ -26,12 +45,10 @@ class AdminController {
                 code: error.code
             });
         }
-    };
-
-    /**
-     * تحديث بيانات مشرف
+    };    /**
+     * Update admin details
      */
-    updateAdmin = async (req, res) => {
+    async updateAdmin(req, res) {
         try {
             const admin = await this.adminService.updateAdmin(
                 req.params.adminId,
@@ -51,12 +68,10 @@ class AdminController {
                 code: error.code
             });
         }
-    };
-
-    /**
-     * حذف مشرف
+    };    /**
+     * Delete an admin
      */
-    deleteAdmin = async (req, res) => {
+    async deleteAdmin(req, res) {
         try {
             await this.adminService.deleteAdmin(req.params.adminId, req.admin);
             res.json({
@@ -71,12 +86,10 @@ class AdminController {
                 code: error.code
             });
         }
-    };
-
-    /**
-     * الحصول على قائمة المشرفين
+    };    /**
+     * Get list of admins
      */
-    getAdmins = async (req, res) => {
+    async getAdmins(req, res) {
         try {
             const { page = 1, limit = 10, ...filters } = req.query;
             const offset = (page - 1) * limit;

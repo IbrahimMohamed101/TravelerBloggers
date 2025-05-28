@@ -5,6 +5,7 @@ const OAuthService = require('../services/auth/oauthService');
 const AuthService = require('../services/auth/authService');
 const UserService = require('../services/user/userService');
 const PasswordService = require('../services/auth/PasswordService');
+const initModels = require('../models/init-models');
 const EmailService = require('../services/email/emailService');
 const EmailVerificationService = require('../services/auth/emailVerificationService');
 const BlogService = require('../services/blog/BlogService');
@@ -13,6 +14,7 @@ const TagService = require('../services/blog/TagService');
 const InteractionService = require('../services/blog/InteractionService');
 const RoleService = require('../services/permission/roleService');
 const PermissionService = require('../services/permission/permissionService');
+const AdminService = require('../services/admin/adminService');
 const logger = require('../utils/logger');
 const { enableAuditLog, useRedis } = require('./containerConfig');
 
@@ -73,9 +75,17 @@ async function initServices(db, sequelize, container) {
     services.tagService = new TagService(db, services.redisService);
     services.interactionService = new InteractionService(db, services.redisService);
 
-    // Initialize permission services
+    // Initialize permission and admin services
     services.roleService = new RoleService(db, services.redisService);
     services.permissionService = new PermissionService(db, services.redisService);
+    services.adminService = new AdminService({
+        db,
+        sequelize,
+        redisService: services.redisService,
+        roleService: services.roleService,
+        auditService: services.auditLogService || null,
+        logger
+    });
 
     // Set audit service for role service if available
     if (services.auditLogService) {

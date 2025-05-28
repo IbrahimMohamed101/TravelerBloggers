@@ -91,7 +91,8 @@ async function initializeRoutes() {
     const tokenRoutes = require('./routes/auth/tokenRoutes')(container);
     const passwordRoutes = require('./routes/auth/passwordRoutes')(container);
     const blogRoutes = require('./routes/blog/index')(container);
-    const adminRoutes = require('./routes/admin/rolePermissionRoutes')(container);
+    const adminRoutes = require('./routes/admin/adminRoutes')(container);
+    const rolePermissionRoutes = require('./routes/admin/rolePermissionRoutes')(container);
 
     const router = express.Router();
 
@@ -106,6 +107,7 @@ async function initializeRoutes() {
     router.use('/auth', passwordRoutes);
     router.use('/blogs', blogRoutes);
     router.use('/admin', adminRoutes);
+    router.use('/admin/permissions', rolePermissionRoutes);
 
     app.use('/api/v1', router);
 

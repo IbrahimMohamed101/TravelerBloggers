@@ -22,13 +22,13 @@ const PERMISSIONS = {
         REJECT_CONTENT: 'reject_content',
         MANAGE_CATEGORIES: 'manage_categories',
         MANAGE_TAGS: 'manage_tags'
-    },
-
-    // صلاحيات إدارة النظام
+    },    // صلاحيات إدارة النظام
     SYSTEM_MANAGEMENT: {
         VIEW_SYSTEM_SETTINGS: 'view_system_settings',
         UPDATE_SYSTEM_SETTINGS: 'update_system_settings',
         MANAGE_ROLES: 'manage_roles',
+        VIEW_REPORTS: 'view_reports',
+        VIEW_ANALYTICS: 'view_analytics',
         MANAGE_PERMISSIONS: 'manage_permissions',
         VIEW_AUDIT_LOGS: 'view_audit_logs',
         MANAGE_BACKUPS: 'manage_backups',

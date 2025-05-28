@@ -1,33 +1,50 @@
 const bcrypt = require('bcrypt');
 const logger = require('../../utils/logger');
-const withTransaction = require('../../utils/withTransaction');
+const { withTransaction } = require('../../utils/withTransaction');
 const { NotFoundError, ConflictError, ValidationError, ForbiddenError } = require('../../errors/CustomErrors');
 const { PERMISSIONS } = require('../../constants/permissions');
 const { validateEmail, validatePassword } = require('../../utils/validators');
 
 
-class AdminService {
-    constructor(container) {
-        this.container = container;
-        this.db = container.getDb();
-        this.redisService = container.getService('redisService');
-        this.roleService = container.getService('roleService');
-        this.auditService = container.getService('auditService');
+
+class AdminService {    constructor({ db, sequelize, redisService, roleService, auditService, logger }) {
+        this.db = db;
+        this.sequelize = sequelize;
+        this.userModel = db.users;
+        this.roleModel = db.roles;
+        this.permissionModel = db.permissions;
+        this.redisService = redisService;
+        this.roleService = roleService;
+        this.auditService = auditService;
+        this.logger = logger || console;
     }
 
-/**
-     * Validate admin data
+    /**
+     * Get the admin role ID
      */
-    validateAdminData(adminData, isUpdate = false) {
+    async getAdminRoleId(transaction) {
+        const adminRole = await this.roleModel.findOne({
+            where: { name: 'admin' },
+            transaction
+        });
+        if (!adminRole) {
+            throw new Error('Admin role not found. Please ensure roles are properly initialized.');
+        }
+        return adminRole.id;
+    }
+
+    /**
+     * Validate admin data
+     */    validateAdminData(adminData, isUpdate = false) {
         if (!isUpdate) {
-            if (!adminData.first_name || !adminData.last_name || !adminData.username || !adminData.role_id) {
-                throw new ValidationError('Fields first_name, last_name, username, role_id are required');
+            if (!adminData.first_name || !adminData.email || !adminData.password) {
+                throw new ValidationError('Fields first_name, email, and password are required');
             }
-            if (!adminData.email || !validateEmail(adminData.email)) {
+            if (!validateEmail(adminData.email)) {
                 throw new ValidationError('Invalid email address');
             }
-            if (!adminData.password || !validatePassword(adminData.password)) {
-                throw new ValidationError('Password must be at least 8 characters long and contain letters and numbers');
+            if (!validatePassword(adminData.password)) {
+                throw new ValidationError('Password must be at least 8 characters long and meet complexity requirements');
             }
         } else {
             if (adminData.email && !validateEmail(adminData.email)) {
@@ -62,64 +79,67 @@ class AdminService {
         } catch (error) {
             logger.error('Error invalidating admin cache:', error);
         }
-    }
-
-    /**
+    }    /**
      * Create a new admin
-     */
-    async createAdmin(adminData, createdBy) {
-        return withTransaction(this.db, async (transaction) => {
+     */    async createAdmin(adminData, createdById = null) {
+        if (!this.sequelize) {
+            throw new Error('Database not initialized');
+        }
+
+        return withTransaction(this.sequelize, async (transaction) => {
             try {
                 this.validateAdminData(adminData);
-                await this.validateAdminRole(adminData.role_id, transaction);
 
-                const existingUser = await this.db.users.findOne({
-                    where: {
-                        [this.db.Sequelize.Op.or]: [
-                            { email: adminData.email },
-                            { username: adminData.username }
-                        ]
-                    },
+                const existingUser = await this.userModel.findOne({
+                    where: { email: adminData.email },
                     transaction
                 });
+                
                 if (existingUser) {
-                    throw new ConflictError('Email or username already exists');
+                    throw new ConflictError('Email already exists');
                 }
-                const hasPermission = await this.roleService.checkRolePermission(
-                    createdBy.role,
-                    PERMISSIONS.ADMIN_MANAGEMENT.CREATE_ADMIN
-                );
-                if (!hasPermission) {
-                    throw new ForbiddenError('You do not have permission to create an admin');
+
+                // Generate username from email if not provided
+                const username = adminData.username || adminData.email.split('@')[0];
+
+                // Check if username already exists
+                const existingUsername = await this.userModel.findOne({
+                    where: { username },
+                    transaction
+                });
+
+                if (existingUsername) {
+                    throw new ConflictError('Username already exists');
                 }
 
                 const hashedPassword = await bcrypt.hash(adminData.password, 10);
-                const admin = await this.db.users.create({
+                const admin = await this.userModel.create({
                     first_name: adminData.first_name,
-                    last_name: adminData.last_name,
+                    last_name: adminData.last_name || adminData.first_name, // Use first_name as last_name if not provided
+                    username,
                     email: adminData.email,
-                    username: adminData.username,
                     password: hashedPassword,
-                    role_id: adminData.role_id,
-                    is_active: true,
-                    is_admin: true
+                    role_id: await this.getAdminRoleId(transaction),
+                    status: 'active'
                 }, { transaction });
 
-                await this.auditService.logAction(createdBy.id, 'CREATE_ADMIN', {
-                    admin_id: admin.id,
-                    admin_email: admin.email,
-                    role_id: adminData.role_id
-                }, transaction);
+                if (this.auditService && createdById) {
+                    await this.auditService.logAction(createdById, 'CREATE_ADMIN', {
+                        admin_id: admin.id,
+                        admin_email: admin.email
+                    }, transaction);
+                }
 
                 await this.invalidateAdminCache(admin.id);
-                const { password, ...adminWithoutPassword } = admin.toJSON();
+                const adminJson = admin.toJSON();
+                const { password, ...adminWithoutPassword } = adminJson;
                 return adminWithoutPassword;
             } catch (error) {
-                logger.error(`Error in createAdmin: ${error.message}`, { stack: error.stack });
+                this.logger.error(`Error in createAdmin: ${error.message}`, { stack: error.stack });
                 throw error;
             }
         });
     }
-
-    
 }
+
+module.exports = AdminService;

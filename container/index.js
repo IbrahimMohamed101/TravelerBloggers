@@ -7,6 +7,7 @@ class Container {
     constructor() {
         this.services = {};
         this.controllers = {};
+        this.middlewares = {};
         this.db = null;
         this.isInitialized = false;
     }
@@ -19,8 +20,8 @@ class Container {
             this.db = db;
             this.sequelize = sequelize;
 
-            this.services = await initServices(db, sequelize);
-            this.controllers = initControllers(this.services);
+            this.services = await initServices(db, sequelize, this);
+            this.controllers = initControllers(this);
 
             this.isInitialized = true;
             logger.info('Container initialized successfully');
@@ -30,15 +31,21 @@ class Container {
         }
     }
 
+    resolve(name) {
+        if (this.services[name]) return this.services[name];
+        if (this.controllers[name]) return this.controllers[name];
+        if (name === 'db') return this.db;
+        if (name === 'sequelize') return this.sequelize;
+        throw new Error(`Service '${name}' not found in container`);
+    }
+
     getService(name) {
-        if (!this.isInitialized) throw new Error('Container not initialized');
         const service = this.services[name];
         if (!service) throw new Error(`Service '${name}' not found`);
         return service;
     }
 
     getController(name) {
-        if (!this.isInitialized) throw new Error('Container not initialized');
         const controller = this.controllers[name];
         if (!controller) throw new Error(`Controller '${name}' not found`);
         return controller;
@@ -56,6 +63,13 @@ class Container {
 
     getLogger() {
         return logger;
+    }
+
+    getMiddleware(name) {
+        if (name === 'adminAuth') {
+            return authorize;
+        }
+        throw new Error(`Middleware '${name}' not found`);
     }
 }
 

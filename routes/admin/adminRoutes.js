@@ -1,22 +1,33 @@
 // routes/admin/adminRoutes.js
 const express = require('express');
-const router = express.Router();
 const verifyJWT = require('../../middlewares/verifyJWT');
 const authorize = require('../../middlewares/authorization');
 const { validate } = require('../../validators/validate');
 const Joi = require('joi');
-const { validateRequest } = require('../../middlewares/validation');
 const { PERMISSIONS } = require('../../constants/permissions');
 
 module.exports = (container) => {
-    const adminController = container.getController('adminController');
-    const adminAuth = container.getMiddleware('adminAuth');
+    if (!container) {
+        throw new Error('Container is required to initialize admin routes');
+    }
 
-    // Middleware للتحقق من صلاحيات المشرف
+    const router = express.Router();
+    const adminController = container.resolve('adminController');
+
+    if (!adminController) {
+        throw new Error('AdminController could not be resolved from container');
+    }
+
+    // Helper function to wrap controller methods
+    const wrapRoute = (method) => (req, res, next) => {
+        return adminController[method](req, res, next);
+    };
+
+    // Authorization middleware
     const requireAdmin = authorize({ requiredPermission: 'manage_users' });
     const requireSuperAdmin = authorize({ requiredPermission: 'manage_system' });
 
-    // مسارات إدارة المستخدمين
+    // User management routes
     router.get('/users',
         verifyJWT(),
         requireAdmin,
@@ -27,61 +38,79 @@ module.exports = (container) => {
             role: Joi.string(),
             status: Joi.string().valid('active', 'inactive')
         }), 'query'),
-        adminController.getUsers
+        wrapRoute('getUsers')
     );
 
-    // مسارات إدارة المشرفين
-    router.post(
-        '/',
-        adminAuth.requirePermission(PERMISSIONS.ADMIN_MANAGEMENT.CREATE_ADMIN),
-        validateRequest(schemas.createAdmin),
-        adminController.createAdmin
+    // Admin management routes
+    router.post('/',
+        verifyJWT(),
+        requireAdmin,
+        validate(Joi.object({
+            first_name: Joi.string().required(),
+            email: Joi.string().email().required(),
+            password: Joi.string().min(8).required()
+        })),
+        wrapRoute('createAdmin')
     );
 
-    router.put(
-        '/:adminId',
-        adminAuth.requirePermission(PERMISSIONS.ADMIN_MANAGEMENT.EDIT_ADMIN),
-        validateRequest(schemas.updateAdmin),
-        adminController.updateAdmin
+    router.put('/:adminId',
+        verifyJWT(),
+        authorize({ requiredPermission: PERMISSIONS.ADMIN_MANAGEMENT.EDIT_ADMIN }),
+        validate(Joi.object({
+            first_name: Joi.string(),
+            email: Joi.string().email(),
+            role: Joi.string()
+        })),
+        wrapRoute('updateAdmin')
     );
 
-    router.delete(
-        '/:adminId',
-        adminAuth.requirePermission(PERMISSIONS.ADMIN_MANAGEMENT.DELETE_ADMIN),
-        adminController.deleteAdmin
+    router.delete('/:adminId',
+        verifyJWT(),
+        authorize({ requiredPermission: PERMISSIONS.ADMIN_MANAGEMENT.DELETE_ADMIN }),
+        wrapRoute('deleteAdmin')
     );
 
-    router.get(
-        '/',
-        adminAuth.requirePermission(PERMISSIONS.ADMIN_MANAGEMENT.VIEW_ADMINS),
-        validateRequest(schemas.getAdmins, 'query'),
-        adminController.getAdmins
+    router.get('/',
+        verifyJWT(),
+        authorize({ requiredPermission: PERMISSIONS.ADMIN_MANAGEMENT.VIEW_ADMINS }),
+        validate(Joi.object({
+            page: Joi.number().integer().min(1).default(1),
+            limit: Joi.number().integer().min(1).max(100).default(10),
+            search: Joi.string().allow(''),
+            status: Joi.string()
+        }), 'query'),
+        wrapRoute('getAdmins')
     );
 
-    router.get(
-        '/:adminId',
-        adminAuth.requirePermission(PERMISSIONS.ADMIN_MANAGEMENT.VIEW_ADMINS),
-        adminController.getAdmin
+    router.get('/:adminId',
+        verifyJWT(),
+        authorize({ requiredPermission: PERMISSIONS.ADMIN_MANAGEMENT.VIEW_ADMINS }),
+        wrapRoute('getAdmin')
     );
 
-    router.patch(
-        '/:adminId/status',
-        adminAuth.requirePermission(PERMISSIONS.ADMIN_MANAGEMENT.MANAGE_ADMIN_STATUS),
-        adminController.toggleAdminStatus
+    router.patch('/:adminId/status',
+        verifyJWT(),
+        authorize({ requiredPermission: PERMISSIONS.ADMIN_MANAGEMENT.MANAGE_ADMIN_STATUS }),
+        validate(Joi.object({
+            status: Joi.string().valid('active', 'inactive').required()
+        })),
+        wrapRoute('toggleAdminStatus')
     );
 
-    // مسار إنشاء المشرف الرئيسي الأول
-    router.post(
-        '/first-super-admin',
-        validateRequest(schemas.createAdmin),
-        adminController.createFirstSuperAdmin
+    router.post('/first-super-admin',
+        validate(Joi.object({
+            first_name: Joi.string().required(),
+            email: Joi.string().email().required(),
+            password: Joi.string().min(8).required()
+        })),
+        wrapRoute('createFirstSuperAdmin')
     );
 
-    // مسارات إدارة النظام
+    // System management routes
     router.get('/system/status',
         verifyJWT(),
         requireSuperAdmin,
-        adminController.getSystemStatus
+        wrapRoute('getSystemStatus')
     );
 
     router.put('/system/settings',
@@ -93,10 +122,10 @@ module.exports = (container) => {
             max_login_attempts: Joi.number().integer().min(1),
             session_timeout: Joi.number().integer().min(300)
         })),
-        adminController.updateSystemSettings
+        wrapRoute('updateSystemSettings')
     );
 
-    // مسارات إدارة المحتوى
+    // Content management routes
     router.get('/content/reports',
         verifyJWT(),
         requireAdmin,
@@ -105,7 +134,7 @@ module.exports = (container) => {
             limit: Joi.number().integer().min(1).max(100).default(10),
             status: Joi.string().valid('pending', 'resolved', 'rejected')
         }), 'query'),
-        adminController.getContentReports
+        wrapRoute('getContentReports')
     );
 
     router.put('/content/:contentId/moderate',
@@ -113,23 +142,23 @@ module.exports = (container) => {
         requireAdmin,
         validate(Joi.object({
             action: Joi.string().valid('approve', 'reject', 'delete').required(),
-            reason: Joi.string().when('action', {
+            reason: Joi.when('action', {
                 is: 'reject',
                 then: Joi.string().required(),
                 otherwise: Joi.string().optional()
             })
         })),
-        adminController.moderateContent
+        wrapRoute('moderateContent')
     );
 
-    // مسارات الإحصائيات والتقارير
+    // Analytics routes
     router.get('/analytics/overview',
         verifyJWT(),
         requireAdmin,
         validate(Joi.object({
             period: Joi.string().valid('day', 'week', 'month', 'year').default('week')
         }), 'query'),
-        adminController.getAnalyticsOverview
+        wrapRoute('getAnalyticsOverview')
     );
 
     router.get('/analytics/users',
@@ -139,7 +168,7 @@ module.exports = (container) => {
             period: Joi.string().valid('day', 'week', 'month', 'year').default('week'),
             groupBy: Joi.string().valid('day', 'week', 'month').default('day')
         }), 'query'),
-        adminController.getUserAnalytics
+        wrapRoute('getUserAnalytics')
     );
 
     return router;
