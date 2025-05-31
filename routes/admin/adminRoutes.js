@@ -47,8 +47,12 @@ module.exports = (container) => {
         requireAdmin,
         validate(Joi.object({
             first_name: Joi.string().required(),
+            last_name: Joi.string(),
             email: Joi.string().email().required(),
-            password: Joi.string().min(8).required()
+            password: Joi.string().min(8).required(),
+            username: Joi.string(),
+            roleId: Joi.string().valid('admin', 'super_admin'),
+            status: Joi.string().valid('active', 'inactive')
         })),
         wrapRoute('createAdmin')
     );

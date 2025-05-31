@@ -58,11 +58,13 @@ class AdminService {    constructor({ db, sequelize, redisService, roleService, 
     
     /**
      * Validate that the role is an admin role
-     */
-    async validateAdminRole(roleId, transaction) {
-        const role = await this.db.roles.findByPk(roleId, { transaction });
+     */    async validateAdminRole(roleName, transaction) {
+        const role = await this.roleModel.findOne({
+            where: { name: roleName },
+            transaction
+        });
         if (!role || !['super_admin', 'admin'].includes(role.name)) {
-            throw new ValidationError('Must assign a valid admin role');
+            throw new ValidationError('Must assign a valid admin role (admin or super_admin)');
         }
         return role;
     }
@@ -79,9 +81,11 @@ class AdminService {    constructor({ db, sequelize, redisService, roleService, 
         } catch (error) {
             logger.error('Error invalidating admin cache:', error);
         }
-    }    /**
+    }
+    /**
      * Create a new admin
-     */    async createAdmin(adminData, createdById = null) {
+     */
+    async createAdmin(adminData, createdById = null) {
         if (!this.sequelize) {
             throw new Error('Database not initialized');
         }
@@ -112,6 +116,15 @@ class AdminService {    constructor({ db, sequelize, redisService, roleService, 
                     throw new ConflictError('Username already exists');
                 }
 
+                // Validate and use provided roleId if available, else get default admin role id
+                let roleIdToUse;
+                if (adminData.roleId) {
+                    const role = await this.validateAdminRole(adminData.roleId, transaction);
+                    roleIdToUse = role.id;
+                } else {
+                    roleIdToUse = await this.getAdminRoleId(transaction);
+                }
+
                 const hashedPassword = await bcrypt.hash(adminData.password, 10);
                 const admin = await this.userModel.create({
                     first_name: adminData.first_name,
@@ -119,7 +132,7 @@ class AdminService {    constructor({ db, sequelize, redisService, roleService, 
                     username,
                     email: adminData.email,
                     password: hashedPassword,
-                    role_id: await this.getAdminRoleId(transaction),
+                    role_id: roleIdToUse,
                     status: 'active'
                 }, { transaction });
 
