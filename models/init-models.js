@@ -32,6 +32,7 @@ var _email_verification_tokens = require("./email_verification_tokens");
 var _password_reset_tokens = require("./password_reset_tokens");
 var _role_permissions = require("./role_permissions");
 var _roles = require("./roles");
+var _permission_dependencies = require("./permission_dependencies");
 
 function initModels(sequelize) {
   var admin_logs = _admin_logs(sequelize, DataTypes);
@@ -59,16 +60,17 @@ function initModels(sequelize) {
   var travel_plans = _travel_plans(sequelize, DataTypes);
   var trophies = _trophies(sequelize, DataTypes);
   var user_trophies = _user_trophies(sequelize, DataTypes);
+  var users = _users(sequelize, DataTypes);
   var user_permissions = _user_permissions(sequelize, DataTypes);
   var refresh_tokens = _refresh_tokens(sequelize, DataTypes);
   var email_verification_tokens = _email_verification_tokens(sequelize, DataTypes);
   var password_reset_tokens = _password_reset_tokens(sequelize, DataTypes);
-  var users = _users(sequelize, DataTypes);
   var role_permissions = _role_permissions(sequelize, DataTypes);
   var roles = _roles(sequelize, DataTypes);
+  var permission_dependencies = _permission_dependencies(sequelize, DataTypes);
 
-  // Create models object
-  const models = {
+  // Initialize all model associations
+  Object.values({
     admin_logs,
     audit_logs,
     blog_categories,
@@ -94,23 +96,89 @@ function initModels(sequelize) {
     travel_plans,
     trophies,
     user_trophies,
+    users,
     user_permissions,
     refresh_tokens,
     email_verification_tokens,
     password_reset_tokens,
-    users,
     role_permissions,
-    roles
-  };
-
-  // Initialize associations
-  Object.keys(models).forEach(modelName => {
-    if (models[modelName].associate) {
-      models[modelName].associate(models);
+    roles,
+    permission_dependencies
+  }).forEach(model => {
+    if (model.associate) {
+      model.associate({
+        admin_logs,
+        audit_logs,
+        blog_categories,
+        blog_reactions,
+        blogs,
+        blog_tags,
+        categories,
+        comment_reactions,
+        comments,
+        contact_messages,
+        events,
+        followers,
+        guest_users,
+        notifications,
+        permissions,
+        post_reactions,
+        posts,
+        reactions,
+        sessions,
+        tags,
+        travel_plan_locations,
+        travel_plan_shares,
+        travel_plans,
+        trophies,
+        user_trophies,
+        users,
+        user_permissions,
+        refresh_tokens,
+        email_verification_tokens,
+        password_reset_tokens,
+        role_permissions,
+        roles,
+        permission_dependencies
+      });
     }
   });
 
-  return models;
+  return {
+    admin_logs,
+    audit_logs,
+    blog_categories,
+    blog_reactions,
+    blogs,
+    blog_tags,
+    categories,
+    comment_reactions,
+    comments,
+    contact_messages,
+    events,
+    followers,
+    guest_users,
+    notifications,
+    permissions,
+    post_reactions,
+    posts,
+    reactions,
+    sessions,
+    tags,
+    travel_plan_locations,
+    travel_plan_shares,
+    travel_plans,
+    trophies,
+    user_trophies,
+    users,
+    user_permissions,
+    refresh_tokens,
+    email_verification_tokens,
+    password_reset_tokens,
+    role_permissions,
+    roles,
+    permission_dependencies
+  };
 }
 
 module.exports = initModels;

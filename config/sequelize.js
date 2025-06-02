@@ -1,15 +1,20 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const config = require('./config');
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
+    config.development.database,
+    config.development.username,
+    config.development.password,
     {
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        dialect: 'postgres',
-        logging: false, // ممكن تخليه true لو عايز تشوف SQL اللي بتتنفذ
+        host: config.development.host,
+        dialect: config.development.dialect,
+        logging: true, // Enable SQL logging for debugging
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        }
     }
 );
 

@@ -9,9 +9,15 @@ module.exports = {
                 defaultValue: Sequelize.literal('uuid_generate_v4()'),
                 allowNull: false
             },
-            role: {
-                type: Sequelize.STRING(50),
-                allowNull: false
+            role_id: {
+                type: Sequelize.UUID,
+                allowNull: false,
+                references: {
+                    model: 'roles',
+                    key: 'id'
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
             permission_id: {
                 type: Sequelize.UUID,
@@ -36,9 +42,9 @@ module.exports = {
         });
 
         await queryInterface.addConstraint('role_permissions', {
-            fields: ['role', 'permission_id'],
+            fields: ['role_id', 'permission_id'],
             type: 'unique',
-            name: 'role_permissions_role_permission_id_key'
+            name: 'role_permissions_role_id_permission_id_key'
         });
     },
 

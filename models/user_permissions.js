@@ -32,9 +32,25 @@ module.exports = function (sequelize, DataTypes) {
             {
                 name: 'user_permissions_permission_id_idx',
                 fields: [{ name: 'permission_id' }]
+            },
+            {
+                name: 'user_permissions_unique_user_permission',
+                unique: true,
+                fields: ['user_id', 'permission_id']
             }
         ]
     });
+
+    UserPermission.associate = function(models) {
+        UserPermission.belongsTo(models.users, {
+            foreignKey: 'user_id',
+            as: 'user'
+        });
+        UserPermission.belongsTo(models.permissions, {
+            foreignKey: 'permission_id',
+            as: 'permission'
+        });
+    };
 
     return UserPermission;
 };

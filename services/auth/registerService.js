@@ -26,7 +26,7 @@ class RegisterService {
 
             const hashedPassword = await bcrypt.hash(userData.password, 12);
 
-            const defaultRole = await this.db.role.findOne({
+            const defaultRole = await this.db.roles.findOne({
                 where: { name: 'user' },
                 transaction
             });

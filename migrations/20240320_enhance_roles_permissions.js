@@ -5,15 +5,9 @@ module.exports = {
     // Start transaction
     const transaction = await queryInterface.sequelize.transaction();
 
-    try {
-      // 1. Modify roles table
-      await queryInterface.addColumn('roles', 'level', {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-        comment: 'Hierarchy level of the role (higher number means more privileges)'
-      }, { transaction });
-
+    try {      // 1. Modify roles table
+      // Skip adding 'level' column as it's already added in base tables migration
+      
       await queryInterface.addColumn('roles', 'parent_role_id', {
         type: Sequelize.UUID,
         allowNull: true,

@@ -1,44 +1,80 @@
 const sequelize = require('./config/sequelize');
-const fs = require('fs');
-const path = require('path');
+const initModels = require('./models/init-models');
 
-// تحميل جميع الموديلز
-const models = {};
-fs.readdirSync(path.join(__dirname, 'models'))
-    .filter(file => file.endsWith('.js') && file !== 'index.js' && file !== 'init-models.js')
-    .forEach(file => {
-        const model = require(path.join(__dirname, 'models', file))(sequelize, sequelize.Sequelize.DataTypes);
-        models[model.name] = model;
-    });
+// Load all models and initialize associations using init-models.js
+const models = initModels(sequelize);
 
-// تطبيق العلاقات بين الجداول
-Object.keys(models).forEach(modelName => {
-    if (models[modelName].associate) {
-        models[modelName].associate(models);
-    }
-});
-
-// دالة لتهيئة قاعدة البيانات
+// Function to initialize the database
 async function initDatabase() {
     try {
-        // اختبار الاتصال بقاعدة البيانات
+        // Test database connection
         await sequelize.authenticate();
         console.log('✅ تم الاتصال بقاعدة البيانات بنجاح');
 
-        // ترتيب إنشاء الجداول
+        // Migration step: Add createdAt column to roles table safely
+        // Add column as nullable with default current timestamp if not exists
+        await sequelize.query(`
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns 
+                    WHERE table_name='roles' AND column_name='createdAt'
+                ) THEN
+                    ALTER TABLE public.roles ADD COLUMN "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now();
+                END IF;
+            END
+            $$;
+        `);
+
+        // Update existing rows to have createdAt if null
+        await sequelize.query(`
+            UPDATE public.roles SET "createdAt" = now() WHERE "createdAt" IS NULL;
+        `);
+
+        // Alter column to set NOT NULL constraint
+        await sequelize.query(`
+            ALTER TABLE public.roles ALTER COLUMN "createdAt" SET NOT NULL;
+        `);
+
+        // Migration step: Add updatedAt column to roles table safely
+        // Add column as nullable with default current timestamp if not exists
+        await sequelize.query(`
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns 
+                    WHERE table_name='roles' AND column_name='updatedAt'
+                ) THEN
+                    ALTER TABLE public.roles ADD COLUMN "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now();
+                END IF;
+            END
+            $$;
+        `);
+
+        // Update existing rows to have updatedAt if null
+        await sequelize.query(`
+            UPDATE public.roles SET "updatedAt" = now() WHERE "updatedAt" IS NULL;
+        `);
+
+        // Alter column to set NOT NULL constraint
+        await sequelize.query(`
+            ALTER TABLE public.roles ALTER COLUMN "updatedAt" SET NOT NULL;
+        `);
+
+        // Define sync order for tables
         const syncOrder = [
-            'roles',           // يجب إنشاء جدول الأدوار أولاً
-            'permissions',     // ثم جدول الصلاحيات
-            'role_permissions', // ثم جدول العلاقة بين الأدوار والصلاحيات
-            'users',          // ثم جدول المستخدمين
-            'categories',     // ثم جدول التصنيفات
+            'roles',
+            'permissions',
+            'role_permissions',
+            'users',
+            'categories',
             'tags',
-            'trophies',       // ثم جدول الجوائز
-            'blogs',          // ثم جدول المدونات
-            'posts',          // ثم جدول المنشورات
-            'comments',       // ثم جدول التعليقات
-            'reactions',      // ثم جدول التفاعلات
-            'blog_categories', // ثم الجداول الوسيطة
+            'trophies',
+            'blogs',
+            'posts',
+            'comments',
+            'reactions',
+            'blog_categories',
             'blog_tags',
             'blog_reactions',
             'post_reactions',
@@ -60,7 +96,7 @@ async function initDatabase() {
             'guest_users'
         ];
 
-        // إنشاء الجداول بالترتيب
+        // Sync tables in order with alter: true
         for (const modelName of syncOrder) {
             if (models[modelName]) {
                 console.log(`🔄 جاري إنشاء جدول ${modelName}...`);
@@ -77,5 +113,5 @@ async function initDatabase() {
     }
 }
 
-// تشغيل عملية التهيئة
+// Run initialization
 initDatabase();

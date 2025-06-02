@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('sessions', {
+    const Sessions = sequelize.define('sessions', {
         id: {
             type: DataTypes.UUID,
             allowNull: false,
@@ -51,50 +51,43 @@ module.exports = function (sequelize, DataTypes) {
         is_active: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: true,
-            comment: 'Whether session is currently active'
-        },
-        last_activity: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            comment: 'Timestamp of last activity in session'
+            defaultValue: true
         },
         created_at: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: Sequelize.NOW
+            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
         },
         updated_at: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: Sequelize.NOW
+            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
         }
     }, {
         sequelize,
         tableName: 'sessions',
         schema: 'public',
-        timestamps: false,
+        timestamps: true,
+        underscored: true,
         indexes: [
             {
-                name: "sessions_pkey",
-                unique: true,
-                fields: [
-                    { name: "id" },
-                ]
+                name: 'sessions_user_id_idx',
+                fields: ['user_id']
             },
             {
-                name: "sessions_token_key",
-                unique: true,
-                fields: [
-                    { name: "token" },
-                ]
-            },
-            {
-                name: "sessions_user_id_index",
-                fields: [
-                    { name: "user_id" },
-                ]
+                name: 'sessions_token_idx',
+                fields: ['token'],
+                unique: true
             }
         ]
     });
+
+    Sessions.associate = function(models) {
+        Sessions.belongsTo(models.users, {
+            foreignKey: 'user_id',
+            as: 'user'
+        });
+    };
+
+    return Sessions;
 };

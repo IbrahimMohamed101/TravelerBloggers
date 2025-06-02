@@ -79,26 +79,34 @@ module.exports = function (sequelize, DataTypes) {
 
     Permission.associate = function (models) {
         // Users (many-to-many through user_permissions)
-        Permission.belongsToMany(models.users, {
-            through: 'user_permissions',
-            foreignKey: 'permission_id',
-            otherKey: 'user_id',
-            as: 'users'
-        });
+        if (models.users && models.user_permissions) {
+            Permission.belongsToMany(models.users, {
+                through: models.user_permissions,
+                foreignKey: 'permission_id',
+                otherKey: 'user_id',
+                as: 'users',
+                constraints: true
+            });
+        }
         
-        // Role permissions
-        Permission.hasMany(models.role_permissions, {
-            foreignKey: 'permission_id',
-            sourceKey: 'id',
-            as: 'rolePermissions'
-        });
+        // Roles (many-to-many through role_permissions)
+        if (models.roles && models.role_permissions) {
+            Permission.belongsToMany(models.roles, {
+                through: models.role_permissions,
+                foreignKey: 'permission_id',
+                otherKey: 'role_id',
+                as: 'roles',
+                constraints: true
+            });
+        }
 
-        // Permission dependencies
+        // Permission dependencies (self-referential many-to-many)
         Permission.belongsToMany(Permission, {
-            through: 'permission_dependencies',
+            through: models.permission_dependencies,
             foreignKey: 'permission_id',
-            otherKey: 'required_permission_id',
-            as: 'requiredPermissions'
+            otherKey: 'dependent_permission_id',
+            as: 'requiredPermissions',
+            constraints: true
         });
     };
 

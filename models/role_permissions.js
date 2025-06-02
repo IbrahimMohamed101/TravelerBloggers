@@ -32,21 +32,24 @@ module.exports = function (sequelize, DataTypes) {
         underscored: false
     });
 
-    // تحديد بشكل صريح جدًا أن هذا النموذج ليس لديه عمود 'role'
-    RolePermissions.removeAttribute('role');
-
     RolePermissions.associate = function (models) {
-        RolePermissions.belongsTo(models.permissions, {
-            foreignKey: 'permission_id',
-            targetKey: 'id',
-            as: 'permission'
-        });
+        if (models.permissions) {
+            RolePermissions.belongsTo(models.permissions, {
+                foreignKey: 'permission_id',
+                targetKey: 'id',
+                as: 'permission',
+                constraints: true
+            });
+        }
         
-        RolePermissions.belongsTo(models.roles, {
-            foreignKey: 'role_id',
-            targetKey: 'id',
-            as: 'role'
-        });
+        if (models.roles) {
+            RolePermissions.belongsTo(models.roles, {
+                foreignKey: 'role_id',
+                targetKey: 'id',
+                as: 'role',
+                constraints: true
+            });
+        }
     };
 
     return RolePermissions;
